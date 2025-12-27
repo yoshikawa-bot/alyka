@@ -7,7 +7,6 @@ module.exports = async (req, res) => {
   if (!url) return res.status(400).json({ status: false, message: "URL necessária" });
 
   try {
-    // Tentativa na API Delirius
     let data;
     try {
       const resApi = await axios.get(`https://api.delirius.store/download/instagram?url=${encodeURIComponent(url)}`);
