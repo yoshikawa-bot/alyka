@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "API Restful para Downloaders",
   "main": "api/index.js",
-  "type": "module", 
   "dependencies": {
     "ruhend-scraper": "^9.0.8",
     "axios": "^1.6.0",
