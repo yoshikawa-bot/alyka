@@ -1,12 +1,10 @@
 const ytSearch = require('yt-search');
 
 module.exports = async (req, res) => {
-    // Configuração de CORS para permitir requisições do seu frontend
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    // Lida com requisições preflight do navegador (OPTIONS)
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
@@ -21,14 +19,12 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // Usando yt-search para buscar vídeos e canais
+        
         const searchResult = await ytSearch(query);
         
-        // Extrair vídeos e canais da resposta
         const videos = searchResult.videos || [];
         const channels = searchResult.channels || [];
 
-        // Formatar os vídeos para manter compatibilidade
         const formattedVideos = videos.map(video => ({
             id: video.videoId,
             title: video.title,
@@ -44,7 +40,6 @@ module.exports = async (req, res) => {
             }
         }));
 
-        // Formatar os canais para manter compatibilidade
         const formattedChannels = channels.map(channel => ({
             id: channel.id,
             name: channel.name,
@@ -57,7 +52,7 @@ module.exports = async (req, res) => {
 
         return res.status(200).json({ 
             status: true, 
-            creator: "Alyka", 
+            creator: "Alyka, a Yoshikawa System", 
             result: {
                 videos: formattedVideos,
                 channels: formattedChannels
