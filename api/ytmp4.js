@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({ 
       status: true, 
-      creator: "Alyka", 
+      creator: "Alyka, a Yoshikawa System", 
       result: result 
     });
 
