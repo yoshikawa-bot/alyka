@@ -1,9 +1,10 @@
 {
   "name": "alyka-api",
   "version": "1.0.0",
-  "description": "API Restful by @kawalyansky",
+  "description": "API Restful para Downloaders",
   "main": "api/index.js",
+  "type": "module", 
   "dependencies": {
-    "ruhend-scraper": "^9.0.8"
+    "ruhend-scraper": "^7.0.4"
   }
 }
