@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alyka API - Yoshikawa Systems</title>
+    <title>Alyka API, a Yoshikawa System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -11,7 +11,6 @@
         :root {
             --primary: #0ea5e9; 
             --primary-dark: #0284c7;
-            --primary-glow: rgba(14, 165, 233, 0.4);
             --secondary: #94a3b8;
             --text: #f8fafc;
             --bg-color: #050505;
@@ -19,7 +18,7 @@
             --border: rgba(255, 255, 255, 0.08);
             --success: #10b981;
             --error: #ef4444;
-            --sidebar-glass: rgba(10, 10, 10, 0.85);
+            --sidebar-glass: rgba(10, 10, 10, 0.95);
         }
 
         * {
@@ -32,15 +31,13 @@
             font-family: 'Inter', Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text);
-            line-height: 1.5;
-            font-size: 15px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            overflow-y: auto;
         }
 
+        /* HEADER PRINCIPAL */
         .header {
             background-color: rgba(5, 5, 5, 0.8);
             border-bottom: 1px solid var(--border);
@@ -69,7 +66,6 @@
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
-            cursor: pointer;
         }
 
         .logo-img {
@@ -83,7 +79,6 @@
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--text);
-            letter-spacing: -0.5px;
         }
 
         .menu-btn {
@@ -94,17 +89,9 @@
             height: 32px;
             border-radius: 6px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
         }
 
-        .menu-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
+        /* SIDEBAR ESTRUTURA FIXA/ROLÁVEL */
         .sidebar-overlay {
             position: fixed;
             inset: 0;
@@ -112,14 +99,11 @@
             z-index: 998;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: 0.3s;
             backdrop-filter: blur(2px);
         }
 
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
         .sidebar {
             position: fixed;
@@ -129,28 +113,33 @@
             height: 100%;
             z-index: 999;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
             background: var(--sidebar-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column; /* Organiza em coluna */
             box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            overflow-y: auto;
         }
 
-        .sidebar.active {
-            right: 0;
-        }
+        .sidebar.active { right: 0; }
 
+        /* Parte Estática do Menu */
         .sidebar-header {
+            padding: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
+            flex-shrink: 0; /* Impede de encolher ou sumir na rolagem */
+        }
+
+        /* Parte Rolável do Menu */
+        .sidebar-content {
+            flex: 1; /* Ocupa o restante da altura */
+            overflow-y: auto; /* Habilita rolagem apenas aqui */
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        /* Removido as bordas e linhas conforme solicitado */
+        .sidebar-header, .sidebar-title {
+            border: none !important;
         }
 
         .close-sidebar {
@@ -161,102 +150,58 @@
             cursor: pointer;
         }
 
-        .close-sidebar:hover { color: var(--text); }
-
         .sidebar-title {
             color: var(--secondary);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 1.5rem 0 0.5rem 0;
-            font-weight: 600;
+            font-weight: 700;
+            opacity: 0.6;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
+            gap: 12px;
+            padding: 12px;
             color: var(--text);
             text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.2s;
+            border-radius: 8px;
+            transition: 0.2s;
             margin-bottom: 4px;
             font-size: 0.9rem;
-            border: 1px solid transparent;
         }
 
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.05);
-        }
-
+        .nav-link:hover { background: rgba(255, 255, 255, 0.05); }
         .nav-link.active {
-            background: rgba(14, 165, 233, 0.15);
+            background: rgba(14, 165, 233, 0.1);
             color: var(--primary);
-            border-color: rgba(14, 165, 233, 0.3);
-            font-weight: 500;
         }
 
+        /* CONTEÚDO PRINCIPAL */
         .container {
             flex: 1;
             width: 100%;
             max-width: 900px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
         }
 
-        .view-section {
-            display: none;
-            width: 100%;
-            animation: fadeIn 0.4s ease;
-            flex: 1; /* Garante que ocupe o espaço para empurrar footer */
-            flex-direction: column;
-        }
+        .view-section { display: none; animation: fadeIn 0.4s ease; flex-direction: column; }
+        .view-section.active { display: flex; }
 
-        .view-section.active {
-            display: flex; /* Mudado para flex para organizar footer */
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hero {
-            text-align: center;
-            padding: 4rem 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #fff, var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            color: var(--secondary);
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto 2rem auto;
-        }
+        .hero { text-align: center; padding: 4rem 1rem; }
+        .hero h1 { font-size: 2rem; margin-bottom: 1rem; }
+        .hero p { color: var(--secondary); margin-bottom: 2rem; }
 
         .grid-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
-            margin-top: 2rem;
-            width: 100%;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
 
         .info-card {
@@ -264,245 +209,75 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
             text-align: center;
-            transition: transform 0.2s;
-        }
-        
-        .info-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(14, 165, 233, 0.3);
         }
 
-        /* FOOTER LIMPO E TRANSPARENTE */
         .simple-footer {
             padding: 2rem;
             text-align: center;
             color: var(--secondary);
             font-size: 0.8rem;
-            opacity: 0.5;
-            border: none;      /* Sem borda */
-            background: none;  /* Sem fundo */
-            margin-top: auto;  /* Empurra para o fundo */
+            opacity: 0.4;
+            margin-top: auto;
         }
 
+        /* TOOL TESTER */
         .tool-container {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            margin-bottom: 2rem;
+            border-radius: 16px;
+            padding: 2rem;
         }
 
         .tool-header {
-            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 1rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1rem;
-        }
-
-        .tool-title { font-size: 1.25rem; color: var(--text); font-weight: 600; }
-        .tool-subtitle { font-size: 0.9rem; color: var(--secondary); }
-
-        .form-group { margin-bottom: 1.2rem; }
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--secondary);
-            font-size: 0.85rem;
-            font-weight: 500;
+            margin-bottom: 2rem;
         }
 
         .dark-input {
             width: 100%;
             background: #000;
             border: 1px solid var(--border);
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            transition: 0.3s;
+            padding: 1rem;
+            border-radius: 10px;
+            color: #fff;
+            margin-top: 0.5rem;
         }
-        
-        .dark-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
-        }
-
-        .endpoint-box {
-            background: #000;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-        }
-
-        .method-tag {
-            background: rgba(14, 165, 233, 0.1);
-            color: var(--primary);
-            padding: 0.8rem 1rem;
-            font-weight: 600;
-            font-size: 0.8rem;
-            border-right: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-
-        .url-display {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--secondary);
-            padding: 0 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow-x: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .url-display::-webkit-scrollbar { display: none; }
-
-        .copy-btn-sm {
-            background: transparent;
-            border: none;
-            border-left: 1px solid var(--border);
-            color: var(--secondary);
-            padding: 0.8rem 1rem;
-            cursor: pointer;
-            transition: 0.2s;
-            flex-shrink: 0;
-        }
-        .copy-btn-sm:hover { color: var(--text); background: rgba(255,255,255,0.05); }
 
         .action-btn {
             width: 100%;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0.9rem;
-            border-radius: 8px;
+            padding: 1rem;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-        }
-        .action-btn:hover { background: var(--primary-dark); }
-        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .result-area {
             margin-top: 1.5rem;
-            display: none;
-            border-top: 1px solid var(--border);
-            padding-top: 1.5rem;
         }
-        .result-area.active { display: block; }
 
-        .json-container {
-            position: relative;
-            background: #080808;
+        .endpoint-box {
+            background: #000;
             border: 1px solid var(--border);
             border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-
-        .copy-json-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: var(--secondary);
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: 0.2s;
-            z-index: 10;
-        }
-        .copy-json-btn:hover { background: var(--primary); color: white; }
-
-        .json-pre {
-            padding: 1rem;
-            overflow-x: auto;
-            color: #a5d6ff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            margin: 0;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-        .action-btn.loading .spinner { display: block; }
-        .action-btn.loading span { display: none; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .toast-container {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-            width: auto;
-            pointer-events: none;
-        }
-
-        .toast {
-            background: #1e1e1e;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 50px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 10px;
-            min-width: 250px;
-            justify-content: center;
-            animation: slideUpFade 0.3s ease;
-            pointer-events: auto;
-        }
-        
-        .toast.success { border-bottom: 3px solid var(--success); }
-        .toast.error { border-bottom: 3px solid var(--error); }
-
-        @keyframes slideUpFade { 
-            from { transform: translateY(20px); opacity: 0; } 
-            to { transform: translateY(0); opacity: 1; } 
+            margin: 1rem 0;
+            overflow: hidden;
         }
 
-        @media (max-width: 768px) {
-            .sidebar { width: 85%; right: -85%; }
-            .container { padding: 1rem; }
-            .hero h1 { font-size: 1.5rem; }
-        }
+        .method-tag { background: rgba(14, 165, 233, 0.1); color: var(--primary); padding: 0.8rem 1rem; font-size: 0.75rem; font-weight: 800; }
+        .url-display { flex: 1; padding: 0 1rem; font-family: monospace; font-size: 0.8rem; color: var(--secondary); overflow-x: auto; white-space: nowrap; }
+
+        .json-container { background: #080808; border-radius: 8px; padding: 1rem; position: relative; margin-top: 1rem; }
+        .json-pre { font-size: 0.85rem; color: #a5d6ff; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; }
+
+        .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; }
+        .toast { background: #1a1a1a; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); color: #fff; font-size: 0.85rem; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+
+        @media (max-width: 768px) { .sidebar { width: 80%; } }
     </style>
 </head>
 <body>
@@ -510,310 +285,149 @@
     <header class="header">
         <div class="header-content">
             <a href="#" class="logo-container" onclick="router('home')">
-                <img src="https://yoshikawa-bot.github.io/cache/images/8fe27a41.jpg" alt="Logo" class="logo-img">
+                <img src="https://yoshikawa-bot.github.io/cache/images/8fe27a41.jpg" class="logo-img">
                 <div class="logo-text">Alyka API</div>
             </a>
-            
-            <button class="menu-btn" id="openSidebarBtn">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
         </div>
     </header>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo-text">Menu</div>
-            <button class="close-sidebar" id="closeSidebarBtn">
+            <div class="logo-text" style="font-size: 1rem;">Menu</div>
+            <button class="close-sidebar" onclick="closeSidebar()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
-        <a href="#" class="nav-link active" id="nav-home" onclick="router('home')">
-            <i class="fas fa-home" style="width: 20px;"></i> Home
-        </a>
+        <div class="sidebar-content">
+            <a href="#" class="nav-link active" id="nav-home" onclick="router('home')">
+                <i class="fas fa-home"></i> Home
+            </a>
 
-        <div class="sidebar-title">Downloads</div>
-        <a href="#" class="nav-link" data-tool="ytmp3" data-mode="url" onclick="setupTool('ytmp3', 'url')">
-            <i class="fab fa-youtube" style="width: 20px;"></i> YT MP3 (URL)
-        </a>
-        <a href="#" class="nav-link" data-tool="ytmp3" data-mode="search" onclick="setupTool('ytmp3', 'search')">
-            <i class="fas fa-search" style="width: 20px;"></i> YT MP3 (Search)
-        </a>
-        <a href="#" class="nav-link" data-tool="ytmp4" data-mode="url" onclick="setupTool('ytmp4', 'url')">
-            <i class="fab fa-youtube" style="width: 20px;"></i> YT MP4 (URL)
-        </a>
-        <a href="#" class="nav-link" data-tool="ytmp4" data-mode="search" onclick="setupTool('ytmp4', 'search')">
-            <i class="fas fa-video" style="width: 20px;"></i> YT MP4 (Search)
-        </a>
-        <a href="#" class="nav-link" data-tool="tiktok" data-mode="url" onclick="setupTool('tiktok', 'url')">
-            <i class="fab fa-tiktok" style="width: 20px;"></i> TikTok
-        </a>
-        <a href="#" class="nav-link" data-tool="igdl" data-mode="url" onclick="setupTool('igdl', 'url')">
-            <i class="fab fa-instagram" style="width: 20px;"></i> Instagram
-        </a>
+            <div class="sidebar-title">Downloads</div>
+            <a href="#" class="nav-link" onclick="setupTool('ytmp3', 'url')"><i class="fab fa-youtube"></i> YT MP3 (URL)</a>
+            <a href="#" class="nav-link" onclick="setupTool('ytmp3', 'search')"><i class="fas fa-search"></i> YT MP3 (Search)</a>
+            <a href="#" class="nav-link" onclick="setupTool('ytmp4', 'url')"><i class="fab fa-youtube"></i> YT MP4 (URL)</a>
+            <a href="#" class="nav-link" onclick="setupTool('ytmp4', 'search')"><i class="fas fa-video"></i> YT MP4 (Search)</a>
+            <a href="#" class="nav-link" onclick="setupTool('tiktok', 'url')"><i class="fab fa-tiktok"></i> TikTok</a>
+            <a href="#" class="nav-link" onclick="setupTool('igdl', 'url')"><i class="fab fa-instagram"></i> Instagram</a>
 
-        <div class="sidebar-title">Search</div>
-        <a href="#" class="nav-link" data-tool="ytsearch" data-mode="query" onclick="setupTool('ytsearch', 'query')">
-            <i class="fab fa-youtube" style="width: 20px;"></i> YT Search
-        </a>
-        <a href="#" class="nav-link" data-tool="tiktok" data-mode="query" onclick="setupTool('tiktok', 'query')">
-            <i class="fab fa-tiktok" style="width: 20px;"></i> TikTok Search
-        </a>
+            <div class="sidebar-title">Search</div>
+            <a href="#" class="nav-link" onclick="setupTool('ytsearch', 'query')"><i class="fab fa-youtube"></i> YT Search</a>
+            <a href="#" class="nav-link" onclick="setupTool('tiktok', 'query')"><i class="fab fa-tiktok"></i> TikTok Search</a>
+        </div>
     </nav>
 
     <main class="container">
-        
         <section id="home-view" class="view-section active">
             <div class="hero">
-                <img src="https://yoshikawa-bot.github.io/cache/images/8fe27a41.jpg" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.5rem; box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);">
-                <h1>Welcome to Alyka API</h1>
-                <p>Official API of Yoshikawa systems, optimized for speed, security and ease of use.</p>
-                
-                <button class="action-btn" style="width: auto; margin: 0 auto; padding: 0.7rem 2rem;" onclick="openSidebar()">
-                    Start Testing <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
-                </button>
+                <img src="https://yoshikawa-bot.github.io/cache/images/8fe27a41.jpg" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.5rem;">
+                <h1>Alyka API</h1>
+                <p>Speed, security and ease of use for your systems.</p>
+                <button class="action-btn" style="width: auto; padding: 0.8rem 2rem;" onclick="openSidebar()">Start Testing</button>
             </div>
 
             <div class="grid-features">
-                <div class="info-card">
-                    <i class="fas fa-bolt" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                    <h3>Fast</h3>
-                    <p style="font-size: 0.8rem; color: var(--secondary);">High performance response times.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-shield-alt" style="color: var(--success); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                    <h3>Secure</h3>
-                    <p style="font-size: 0.8rem; color: var(--secondary);">SSL Encrypted & Safe.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-code" style="color: var(--text); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                    <h3>JSON</h3>
-                    <p style="font-size: 0.8rem; color: var(--secondary);">Clean & Standardized Output.</p>
-                </div>
+                <div class="info-card"><h3>Fast</h3><p>Optimized responses.</p></div>
+                <div class="info-card"><h3>Secure</h3><p>SSL Protection.</p></div>
+                <div class="info-card"><h3>Clean</h3><p>Pure JSON output.</p></div>
             </div>
 
-            <footer class="simple-footer">
-                &copy; 2025 Alyka API, a Yoshikawa System. All rights reserved.
-            </footer>
+            <footer class="simple-footer">&copy; 2025 Alyka API. All rights reserved.</footer>
         </section>
 
         <section id="tool-view" class="view-section">
             <div class="tool-container">
                 <div class="tool-header">
-                    <div id="toolIcon" style="font-size: 1.5rem; color: var(--primary); width: 30px; text-align: center;"></div>
-                    <div>
-                        <h2 id="toolTitle" class="tool-title">Tool Name</h2>
-                        <div id="toolDesc" class="tool-subtitle">Description</div>
-                    </div>
+                    <div id="toolIcon" style="font-size: 1.5rem; color: var(--primary);"></div>
+                    <h2 id="toolTitle" class="tool-title">Tool</h2>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" id="inputLabel">Parameter Value</label>
-                    <input type="text" class="dark-input" id="toolInput" placeholder="Enter link or query...">
+                    <label class="form-label" id="inputLabel">Parameter</label>
+                    <input type="text" class="dark-input" id="toolInput">
                 </div>
 
-                <div class="form-label" style="margin-bottom: 0.4rem;">Endpoint URL</div>
                 <div class="endpoint-box">
                     <div class="method-tag">GET</div>
                     <div class="url-display" id="urlPreview">https://alyka.vercel.app/api/...</div>
-                    <button class="copy-btn-sm" onclick="copyUrl()">
-                        <i class="far fa-copy"></i>
-                    </button>
                 </div>
 
-                <button class="action-btn" id="executeBtn">
-                    <span>Send Request</span>
-                    <div class="spinner"></div>
-                </button>
+                <button class="action-btn" id="executeBtn">Send Request</button>
 
-                <div class="result-area" id="resultArea">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.9rem; font-weight: 600; color: var(--success);">Response (200 OK)</span>
-                    </div>
-                    
+                <div id="resultArea" style="display: none; margin-top: 2rem;">
                     <div class="json-container">
-                        <button class="copy-json-btn" onclick="copyJson()">
-                            <i class="far fa-copy"></i> Copy
-                        </button>
-                        <pre class="json-pre" id="jsonResult">Loading...</pre>
+                        <pre class="json-pre" id="jsonResult"></pre>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
         const BASE_API = "https://alyka.vercel.app/api";
-
         const toolsConfig = {
-            'ytmp3': { name: 'YouTube MP3', icon: 'fab fa-youtube', desc: 'Convert YouTube to MP3', param: 'url', altParam: 'search' },
-            'ytmp4': { name: 'YouTube MP4', icon: 'fab fa-youtube', desc: 'Convert YouTube to MP4', param: 'url', altParam: 'search' },
-            'ytsearch': { name: 'YouTube Search', icon: 'fab fa-youtube', desc: 'Search videos on YouTube', param: 'query' },
-            'tiktok': { name: 'TikTok DL', icon: 'fab fa-tiktok', desc: 'No watermark downloader', param: 'url', altParam: 'query' },
-            'igdl': { name: 'Instagram DL', icon: 'fab fa-instagram', desc: 'Reels/Video downloader', param: 'url' }
+            'ytmp3': { name: 'YouTube MP3', icon: 'fab fa-youtube', param: 'url', altParam: 'search' },
+            'ytmp4': { name: 'YouTube MP4', icon: 'fab fa-youtube', param: 'url', altParam: 'search' },
+            'ytsearch': { name: 'YouTube Search', icon: 'fab fa-youtube', param: 'query' },
+            'tiktok': { name: 'TikTok DL', icon: 'fab fa-tiktok', param: 'url', altParam: 'query' },
+            'igdl': { name: 'Instagram DL', icon: 'fab fa-instagram', param: 'url' }
         };
 
         let currentTool = null;
         let currentParam = null;
-        let lastJsonResponse = null;
-
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const urlPreview = document.getElementById('urlPreview');
-        const inputField = document.getElementById('toolInput');
 
         function openSidebar() {
-            sidebar.classList.add('active');
-            sidebarOverlay.classList.add('active');
-            if(window.innerWidth <= 768) {
-                document.body.style.overflow = 'hidden';
-            }
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebarOverlay').classList.add('active');
         }
 
         function closeSidebar() {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = ''; 
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         }
-
-        document.getElementById('openSidebarBtn').addEventListener('click', openSidebar);
-        document.getElementById('closeSidebarBtn').addEventListener('click', closeSidebar);
-        sidebarOverlay.addEventListener('click', closeSidebar);
 
         function router(viewId) {
-            window.scrollTo(0, 0); 
-            
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-
-            if (viewId === 'home') {
-                document.getElementById('home-view').classList.add('active');
-                document.getElementById('nav-home').classList.add('active');
-            } else {
-                document.getElementById('tool-view').classList.add('active');
-            }
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId + '-view').classList.add('active');
             closeSidebar();
         }
 
-        function setupTool(toolKey, paramMode) {
-            const config = toolsConfig[toolKey];
+        function setupTool(toolKey, mode) {
             currentTool = toolKey;
+            currentParam = (mode === 'search' || mode === 'query') ? (toolsConfig[toolKey].altParam || 'query') : 'url';
             
-            if (paramMode === 'search' || paramMode === 'query') {
-                currentParam = config.altParam || config.param;
-            } else {
-                currentParam = config.param;
-            }
-
-            document.getElementById('toolTitle').innerText = config.name;
-            document.getElementById('toolDesc').innerText = config.desc;
-            document.getElementById('toolIcon').innerHTML = `<i class="${config.icon}"></i>`;
+            document.getElementById('toolTitle').innerText = toolsConfig[toolKey].name;
+            document.getElementById('toolIcon').innerHTML = `<i class="${toolsConfig[toolKey].icon}"></i>`;
             document.getElementById('inputLabel').innerText = `Parameter: ${currentParam}`;
+            document.getElementById('toolInput').value = "";
+            document.getElementById('resultArea').style.display = "none";
             
-            inputField.value = '';
-            inputField.placeholder = currentParam === 'url' ? 'Paste link here...' : 'Type search term...';
-            
-            document.getElementById('resultArea').classList.remove('active');
-            
-            updateUrlPreview();
-            
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            const activeLink = document.querySelector(`.nav-link[data-tool="${toolKey}"][data-mode="${paramMode}"]`);
-            if (activeLink) activeLink.classList.add('active');
-
-            document.getElementById('home-view').classList.remove('active');
-            document.getElementById('tool-view').classList.add('active');
-            
-            closeSidebar();
-            window.scrollTo(0, 0);
+            router('tool');
+            updateUrl();
         }
 
-        inputField.addEventListener('input', updateUrlPreview);
-
-        function updateUrlPreview() {
-            if (!currentTool) return;
-            const val = inputField.value.trim();
-            const displayVal = val ? val : 'VALUE';
-            urlPreview.innerText = `${BASE_API}/${currentTool}?${currentParam}=${displayVal}`;
-            urlPreview.scrollLeft = urlPreview.scrollWidth; 
+        document.getElementById('toolInput').addEventListener('input', updateUrl);
+        function updateUrl() {
+            const val = document.getElementById('toolInput').value || 'VALUE';
+            document.getElementById('urlPreview').innerText = `${BASE_API}/${currentTool}?${currentParam}=${val}`;
         }
 
         document.getElementById('executeBtn').addEventListener('click', async () => {
-            const val = inputField.value.trim();
-            if (!val) {
-                showToast('Please enter a value', 'error');
-                inputField.focus();
-                return;
-            }
-
-            const btn = document.getElementById('executeBtn');
-            const resultArea = document.getElementById('resultArea');
-            const jsonPre = document.getElementById('jsonResult');
-
-            btn.classList.add('loading');
-            btn.disabled = true;
-            resultArea.classList.remove('active');
-            jsonPre.innerText = 'Loading...';
-
-            try {
-                const finalUrl = `${BASE_API}/${currentTool}?${currentParam}=${encodeURIComponent(val)}`;
-                
-                const res = await fetch(finalUrl);
-                const data = await res.json();
-                
-                lastJsonResponse = JSON.stringify(data, null, 2);
-                jsonPre.innerText = lastJsonResponse;
-                resultArea.classList.add('active');
-                
-                setTimeout(() => {
-                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-
-                showToast('Request Success!', 'success');
-
-            } catch (err) {
-                console.error(err);
-                jsonPre.innerText = `Error: ${err.message}`;
-                resultArea.classList.add('active');
-                showToast('Request Failed', 'error');
-            } finally {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }
+            const val = document.getElementById('toolInput').value;
+            if(!val) return;
+            
+            const res = await fetch(`${BASE_API}/${currentTool}?${currentParam}=${encodeURIComponent(val)}`);
+            const data = await res.json();
+            
+            document.getElementById('jsonResult').innerText = JSON.stringify(data, null, 2);
+            document.getElementById('resultArea').style.display = "block";
         });
-
-        function copyUrl() {
-            const text = urlPreview.innerText;
-            navigator.clipboard.writeText(text).then(() => showToast('URL Copied!', 'success'));
-        }
-
-        function copyJson() {
-            if (!lastJsonResponse) return;
-            navigator.clipboard.writeText(lastJsonResponse).then(() => showToast('JSON Copied!', 'success'));
-        }
-
-        function showToast(msg, type) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
-            const color = type === 'success' ? 'var(--success)' : 'var(--error)';
-            
-            toast.innerHTML = `<i class="fas fa-${icon}" style="color:${color}"></i> ${msg}`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
     </script>
 </body>
 </html>
