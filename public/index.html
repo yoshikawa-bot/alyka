@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alyka API Playground</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Alyka API</h1>
+            <p>Selecione um serviço e teste seus endpoints.</p>
+        </header>
+
+        <main>
+            <div class="control-panel">
+                <select id="endpoint-selector">
+                    <option value="tiktok">TikTok Downloader</option>
+                    <option value="ytmp3">YouTube Audio (MP3)</option>
+                    <option value="ytmp4">YouTube Video (MP4)</option>
+                    <option value="igdl">Instagram Downloader</option>
+                    <option value="fbdl">Facebook Downloader</option>
+                    <option value="ytsearch">YouTube Search</option>
+                </select>
+                
+                <input type="text" id="url-input" placeholder="Cole a URL ou termo de busca aqui...">
+                <button onclick="fetchData()">Testar Endpoint</button>
+            </div>
+
+            <div class="result-area">
+                <h3>Resposta JSON:</h3>
+                <pre id="json-output">Aguardando requisição...</pre>
+            </div>
+            
+            <div id="media-preview" class="media-preview">
+                </div>
+        </main>
+
+        <footer>
+            <p>Desenvolvido para testar <code>ruhend-scraper</code></p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
