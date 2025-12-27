@@ -3,44 +3,817 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alyka API Playground</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Alyka API Tester</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* =========================================
+           VARIÁVEIS E BASE (DO SEU PROJETO)
+           ========================================= */
+        :root {
+            --primary: #ff6b6b;
+            --primary-dark: #e05555;
+            --secondary: #94a3b8;
+            --accent: #4dabf7;
+            --accent-dark: #339af0;
+            
+            --dark: #f1f5f9;
+            --light: #0f172a;
+            --border: rgba(255, 255, 255, 0.15);
+            --card-bg: rgba(0, 0, 0, 0.25);
+            --text: #f1f5f9;
+            --bg: transparent;
+            --header-bg: rgba(0, 0, 0, 0.25);
+            --header-border: rgba(255, 255, 255, 0.15);
+            --header-text: #f0f6fc;
+            --success: #10b981;
+            --error: #ef4444;
+            --overlay-bg: rgba(0, 0, 0, 0.5);
+            --sidebar-bg: rgba(15, 23, 42, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: url('https://yoshikawa-bot.github.io/cache/images/c5fde2bd.jpg') no-repeat center/cover fixed;
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 16px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        /* =========================================
+           HEADER & NAV
+           ========================================= */
+        .github-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--header-border);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--text);
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* =========================================
+           SIDEBAR
+           ========================================= */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background: var(--sidebar-bg);
+            z-index: 999;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            backdrop-filter: blur(15px);
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-sidebar:hover {
+            color: var(--primary);
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            color: var(--secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* =========================================
+           MAIN CONTAINER & SECTIONS
+           ========================================= */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(0, 0, 0, 0.3));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================================
+           TOOL INTERFACE (FORM & RESULTS)
+           ========================================= */
+        .tool-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .tool-header {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .glass-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .action-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.25);
+        }
+
+        .action-btn:disabled {
+            background: var(--secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result Area */
+        .result-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .result-area.active {
+            display: block;
+        }
+
+        .json-pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: #a5d6ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+
+        .simple-result-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .result-link {
+            color: var(--accent);
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .result-link:hover { text-decoration: underline; }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        
+        .action-btn.loading .spinner { display: block; }
+        .action-btn.loading span { display: none; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+        }
+        
+        .toast {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-width: 300px;
+        }
+
+        .toast.error { border-left: 4px solid var(--error); }
+        .toast.success { border-left: 4px solid var(--success); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 768px) {
+            .sidebar { width: 80%; right: -80%; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Alyka API</h1>
-            <p>Selecione um serviço e teste seus endpoints.</p>
-        </header>
 
-        <main>
-            <div class="control-panel">
-                <select id="endpoint-selector">
-                    <option value="tiktok">TikTok Downloader</option>
-                    <option value="ytmp3">YouTube Audio (MP3)</option>
-                    <option value="ytmp4">YouTube Video (MP4)</option>
-                    <option value="igdl">Instagram Downloader</option>
-                    <option value="fbdl">Facebook Downloader</option>
-                    <option value="ytsearch">YouTube Search</option>
-                </select>
-                
-                <input type="text" id="url-input" placeholder="Cole a URL ou termo de busca aqui...">
-                <button onclick="fetchData()">Testar Endpoint</button>
-            </div>
-
-            <div class="result-area">
-                <h3>Resposta JSON:</h3>
-                <pre id="json-output">Aguardando requisição...</pre>
-            </div>
+    <header class="github-header">
+        <div class="header-content">
+            <a href="#" class="logo-container" onclick="router('home')">
+                <div class="logo-text">Alyka <span>API</span></div>
+            </a>
             
-            <div id="media-preview" class="media-preview">
-                </div>
-        </main>
+            <button class="menu-btn" id="openSidebarBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
 
-        <footer>
-            <p>Desenvolvido para testar <code>ruhend-scraper</code></p>
-        </footer>
-    </div>
-    <script src="script.js"></script>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-text" style="font-size: 1.2rem;">Menu</div>
+            <button class="close-sidebar" id="closeSidebarBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="sidebar-section">
+                <a href="#" class="nav-link active" onclick="router('home')">
+                    <i class="fas fa-home"></i> Início
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Downloads</div>
+                <a href="#" class="nav-link" onclick="setupTool('ytmp3', 'url')">
+                    <i class="fab fa-youtube"></i> YT MP3 (URL)
+                </a>
+                <a href="#" class="nav-link" onclick="setupTool('ytmp3', 'search')">
+                    <i class="fas fa-search"></i> YT MP3 (Search)
+                </a>
+                <a href="#" class="nav-link" onclick="setupTool('ytmp4', 'url')">
+                    <i class="fab fa-youtube"></i> YT MP4 (URL)
+                </a>
+                <a href="#" class="nav-link" onclick="setupTool('ytmp4', 'search')">
+                    <i class="fas fa-video"></i> YT MP4 (Search)
+                </a>
+                <a href="#" class="nav-link" onclick="setupTool('tiktok', 'url')">
+                    <i class="fab fa-tiktok"></i> TikTok Downloader
+                </a>
+                <a href="#" class="nav-link" onclick="setupTool('igdl', 'url')">
+                    <i class="fab fa-instagram"></i> Instagram DL
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Search</div>
+                <a href="#" class="nav-link" onclick="setupTool('ytsearch', 'query')">
+                    <i class="fab fa-youtube"></i> YouTube Search
+                </a>
+                <a href="#" class="nav-link" onclick="setupTool('tiktok', 'query')">
+                    <i class="fab fa-tiktok"></i> TikTok Search
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <section id="home-view" class="view-section active">
+            <div class="hero-card">
+                <h1 class="hero-title">Bem-vindo à Alyka API</h1>
+                <p style="color: var(--secondary); margin-bottom: 1.5rem;">
+                    Uma interface simples e elegante para testar endpoints de download e busca de mídia.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="action-btn" style="width: auto; padding: 0.8rem 1.5rem;" onclick="openSidebar()">
+                        <i class="fas fa-compass"></i> Explorar Menu
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div class="content-card" style="padding: 1.5rem; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--border);">
+                    <i class="fas fa-bolt" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Rápido</h3>
+                    <p style="font-size: 0.9rem; color: var(--secondary);">Respostas otimizadas para processamento ágil de requisições.</p>
+                </div>
+                <div class="content-card" style="padding: 1.5rem; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--border);">
+                    <i class="fas fa-code" style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">JSON Nativo</h3>
+                    <p style="font-size: 0.9rem; color: var(--secondary);">Todas as respostas retornam dados estruturados fáceis de integrar.</p>
+                </div>
+                <div class="content-card" style="padding: 1.5rem; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--border);">
+                    <i class="fas fa-lock" style="color: var(--success); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">HTTPS</h3>
+                    <p style="font-size: 0.9rem; color: var(--secondary);">Comunicação segura via protocolos padrão web.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tool-view" class="view-section">
+            <div class="tool-container">
+                <div class="tool-header">
+                    <div class="tool-icon" id="toolIcon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h2 id="toolTitle" style="font-size: 1.5rem;">Nome da Ferramenta</h2>
+                        <p id="toolDesc" style="color: var(--secondary); font-size: 0.9rem;">Descrição do endpoint</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" id="inputLabel">URL ou Termo de busca</label>
+                    <input type="text" class="glass-input" id="toolInput" placeholder="Cole o link ou digite aqui...">
+                </div>
+
+                <button class="action-btn" id="executeBtn">
+                    <span>Executar Requisição</span>
+                    <div class="spinner"></div>
+                </button>
+
+                <div class="result-area" id="resultArea">
+                    <h4 style="margin-bottom: 1rem; color: var(--success); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-check-circle"></i> Resultado da API
+                    </h4>
+                    
+                    <div class="simple-result-card" id="simpleResult">
+                        </div>
+
+                    <p style="margin: 1rem 0 0.5rem 0; font-size: 0.8rem; color: var(--secondary);">Raw JSON:</p>
+                    <pre class="json-pre" id="jsonResult">Waiting for request...</pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // =========================================
+        // CONFIGURAÇÃO DAS FERRAMENTAS
+        // =========================================
+        const BASE_API = "https://alyka.vercel.app/api";
+
+        const toolsConfig = {
+            'ytmp3': {
+                name: 'YouTube MP3',
+                icon: 'fa-music',
+                desc: 'Baixe áudio de vídeos do YouTube',
+                endpoints: {
+                    'url': { param: 'url', placeholder: 'https://youtube.com/watch?v=...' },
+                    'search': { param: 'search', placeholder: 'Nome da música...' }
+                }
+            },
+            'ytmp4': {
+                name: 'YouTube MP4',
+                icon: 'fa-video',
+                desc: 'Baixe vídeo do YouTube',
+                endpoints: {
+                    'url': { param: 'url', placeholder: 'https://youtube.com/watch?v=...' },
+                    'search': { param: 'search', placeholder: 'Nome do vídeo...' }
+                }
+            },
+            'ytsearch': {
+                name: 'YouTube Search',
+                icon: 'fa-search',
+                desc: 'Pesquise vídeos no YouTube',
+                endpoints: {
+                    'query': { param: 'query', placeholder: 'O que você procura?' }
+                }
+            },
+            'tiktok': {
+                name: 'TikTok Tools',
+                icon: 'fa-tiktok',
+                desc: 'Baixe vídeos sem marca d\'água ou pesquise',
+                endpoints: {
+                    'url': { param: 'url', placeholder: 'https://vt.tiktok.com/...' },
+                    'query': { param: 'query', placeholder: 'Termo de pesquisa...' }
+                }
+            },
+            'igdl': {
+                name: 'Instagram Downloader',
+                icon: 'fa-instagram',
+                desc: 'Baixe Reels e vídeos do Instagram',
+                endpoints: {
+                    'url': { param: 'url', placeholder: 'https://www.instagram.com/reel/...' }
+                }
+            }
+        };
+
+        // Estado Global
+        let currentTool = null;
+        let currentMode = null; // 'url', 'search', 'query'
+
+        // =========================================
+        // UI & NAVEGAÇÃO
+        // =========================================
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const openBtn = document.getElementById('openSidebarBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+
+        function openSidebar() {
+            sidebar.classList.add('active');
+            sidebarOverlay.classList.add('active');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        }
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Router Simples
+        function router(viewId) {
+            // Esconde todas as seções
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            
+            // Remove active dos links
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            if (viewId === 'home') {
+                document.getElementById('home-view').classList.add('active');
+                // Highlight home link
+                document.querySelector('a[onclick="router(\'home\')"]').classList.add('active');
+            } else {
+                document.getElementById('tool-view').classList.add('active');
+            }
+            
+            closeSidebar();
+        }
+
+        // =========================================
+        // LÓGICA DA API
+        // =========================================
+        function setupTool(toolKey, mode) {
+            const config = toolsConfig[toolKey];
+            const modeConfig = config.endpoints[mode];
+
+            if (!config || !modeConfig) return;
+
+            currentTool = toolKey;
+            currentMode = mode;
+
+            // Atualiza UI
+            document.getElementById('toolTitle').innerText = `${config.name} (${mode.toUpperCase()})`;
+            document.getElementById('toolDesc').innerText = config.desc;
+            document.getElementById('toolIcon').innerHTML = `<i class="fab ${config.icon}"></i>`;
+            
+            // Input Setup
+            const input = document.getElementById('toolInput');
+            input.value = '';
+            input.placeholder = modeConfig.placeholder;
+            
+            // Label
+            const labelMap = {
+                'url': 'Link do Vídeo',
+                'search': 'Termo de Busca',
+                'query': 'Termo de Pesquisa'
+            };
+            document.getElementById('inputLabel').innerText = labelMap[mode] || 'Entrada';
+
+            // Limpa resultados anteriores
+            document.getElementById('resultArea').classList.remove('active');
+            document.getElementById('jsonResult').innerText = '';
+            document.getElementById('simpleResult').innerHTML = '';
+
+            // Navega
+            router('tool');
+        }
+
+        document.getElementById('executeBtn').addEventListener('click', async () => {
+            const inputVal = document.getElementById('toolInput').value.trim();
+            if (!inputVal) {
+                showToast('Por favor, preencha o campo.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('executeBtn');
+            const resultArea = document.getElementById('resultArea');
+            const jsonDisplay = document.getElementById('jsonResult');
+            const simpleDisplay = document.getElementById('simpleResult');
+
+            // UI Loading
+            btn.classList.add('loading');
+            btn.disabled = true;
+            resultArea.classList.remove('active');
+
+            try {
+                // Constrói URL: ex: https://alyka.vercel.app/api/ytmp3?search=XXX
+                const paramName = toolsConfig[currentTool].endpoints[currentMode].param;
+                const requestUrl = `${BASE_API}/${currentTool}?${paramName}=${encodeURIComponent(inputVal)}`;
+                
+                console.log(`Fetching: ${requestUrl}`);
+
+                const response = await fetch(requestUrl);
+                const data = await response.json();
+
+                // Mostra Resultado
+                resultArea.classList.add('active');
+                jsonDisplay.innerText = JSON.stringify(data, null, 2);
+
+                // Tenta extrair dados úteis para visualização simples
+                let html = '';
+                
+                // Estratégia genérica para encontrar URLs no JSON
+                if (data.url || data.download_url || data.link) {
+                    const link = data.url || data.download_url || data.link;
+                    html += `<div style="margin-bottom:5px"><strong>Download/Link:</strong></div>
+                             <a href="${link}" target="_blank" class="result-link">${link}</a>`;
+                }
+                
+                if (data.title) {
+                    html = `<div style="margin-bottom:5px; color:var(--primary)"><strong>${data.title}</strong></div>` + html;
+                }
+
+                if (Array.isArray(data)) {
+                     html += `<p>Encontrados ${data.length} resultados (veja o JSON abaixo)</p>`;
+                } else if (Object.keys(data).length === 0) {
+                     html += `<p style="color:var(--error)">Nenhum dado retornado.</p>`;
+                }
+
+                if(html === '') html = '<p style="color:var(--secondary)">Veja o JSON abaixo para detalhes.</p>';
+                
+                simpleDisplay.innerHTML = html;
+                showToast('Requisição completada!', 'success');
+
+            } catch (error) {
+                console.error(error);
+                showToast('Erro ao conectar com a API.', 'error');
+                jsonDisplay.innerText = `Erro: ${error.message}`;
+                resultArea.classList.add('active');
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        // =========================================
+        // UTILS (TOAST)
+        // =========================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = type === 'success' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation-triangle"></i>';
+            
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
