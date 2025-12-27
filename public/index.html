@@ -37,17 +37,16 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden; /* Evita rolagem lateral */
-            overflow-y: auto;   /* Rolagem normal ativada */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        /* HEADER STICKY */
         .header {
             background-color: rgba(5, 5, 5, 0.8);
             border-bottom: 1px solid var(--border);
             height: 60px;
             width: 100%;
-            position: sticky; /* Fixa no topo */
+            position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
@@ -106,7 +105,6 @@
             color: var(--primary);
         }
 
-        /* SIDEBAR FIXED */
         .sidebar-overlay {
             position: fixed;
             inset: 0;
@@ -200,9 +198,8 @@
             font-weight: 500;
         }
 
-        /* MAIN CONTENT */
         .container {
-            flex: 1; /* Empurra o footer para baixo */
+            flex: 1;
             width: 100%;
             max-width: 900px;
             margin: 0 auto;
@@ -215,10 +212,12 @@
             display: none;
             width: 100%;
             animation: fadeIn 0.4s ease;
+            flex: 1; /* Garante que ocupe o espaço para empurrar footer */
+            flex-direction: column;
         }
 
         .view-section.active {
-            display: block;
+            display: flex; /* Mudado para flex para organizar footer */
         }
 
         @keyframes fadeIn {
@@ -226,7 +225,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* HERO SECTION */
         .hero {
             text-align: center;
             padding: 4rem 1rem;
@@ -258,6 +256,7 @@
             gap: 1.5rem;
             margin-top: 2rem;
             width: 100%;
+            margin-bottom: 4rem;
         }
 
         .info-card {
@@ -275,24 +274,25 @@
             border-color: rgba(14, 165, 233, 0.3);
         }
 
-        /* FOOTER */
+        /* FOOTER LIMPO E TRANSPARENTE */
         .simple-footer {
             padding: 2rem;
             text-align: center;
             color: var(--secondary);
             font-size: 0.8rem;
-            opacity: 0.6;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
+            opacity: 0.5;
+            border: none;      /* Sem borda */
+            background: none;  /* Sem fundo */
+            margin-top: auto;  /* Empurra para o fundo */
         }
 
-        /* TOOL INTERFACE */
         .tool-container {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
         }
 
         .tool-header {
@@ -442,8 +442,8 @@
             margin: 0;
             max-height: 500px;
             overflow-y: auto;
-            white-space: pre-wrap;       /* Quebra linhas longas */
-            word-wrap: break-word;       /* Quebra palavras longas */
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .spinner {
@@ -459,7 +459,6 @@
         .action-btn.loading span { display: none; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* TOAST */
         .toast-container {
             position: fixed;
             bottom: 30px;
@@ -471,7 +470,7 @@
             gap: 10px;
             align-items: center;
             width: auto;
-            pointer-events: none; /* Permite clicar através do container vazio */
+            pointer-events: none;
         }
 
         .toast {
@@ -593,6 +592,10 @@
                     <p style="font-size: 0.8rem; color: var(--secondary);">Clean & Standardized Output.</p>
                 </div>
             </div>
+
+            <footer class="simple-footer">
+                &copy; 2025 Alyka API, a Yoshikawa System. All rights reserved.
+            </footer>
         </section>
 
         <section id="tool-view" class="view-section">
@@ -641,10 +644,6 @@
 
     </main>
 
-    <footer class="simple-footer">
-        &copy; 2025 Alyka API, a Yoshikawa System. All rights reserved.
-    </footer>
-
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
@@ -658,22 +657,18 @@
             'igdl': { name: 'Instagram DL', icon: 'fab fa-instagram', desc: 'Reels/Video downloader', param: 'url' }
         };
 
-        // Estado Global
         let currentTool = null;
         let currentParam = null;
         let lastJsonResponse = null;
 
-        // Elementos DOM
         const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
         const urlPreview = document.getElementById('urlPreview');
         const inputField = document.getElementById('toolInput');
 
-        // Navegação Sidebar
         function openSidebar() {
             sidebar.classList.add('active');
             sidebarOverlay.classList.add('active');
-            // Bloqueia rolagem do body APENAS quando o menu mobile está aberto
             if(window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
@@ -682,16 +677,15 @@
         function closeSidebar() {
             sidebar.classList.remove('active');
             sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = ''; // Restaura rolagem
+            document.body.style.overflow = ''; 
         }
 
         document.getElementById('openSidebarBtn').addEventListener('click', openSidebar);
         document.getElementById('closeSidebarBtn').addEventListener('click', closeSidebar);
         sidebarOverlay.addEventListener('click', closeSidebar);
 
-        // Router simples
         function router(viewId) {
-            window.scrollTo(0, 0); // Volta ao topo ao mudar de view
+            window.scrollTo(0, 0); 
             
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
@@ -705,19 +699,16 @@
             closeSidebar();
         }
 
-        // Configuração da Ferramenta Selecionada
         function setupTool(toolKey, paramMode) {
             const config = toolsConfig[toolKey];
             currentTool = toolKey;
             
-            // Define qual parâmetro usar (url ou query/search)
             if (paramMode === 'search' || paramMode === 'query') {
                 currentParam = config.altParam || config.param;
             } else {
                 currentParam = config.param;
             }
 
-            // Atualiza Interface
             document.getElementById('toolTitle').innerText = config.name;
             document.getElementById('toolDesc').innerText = config.desc;
             document.getElementById('toolIcon').innerHTML = `<i class="${config.icon}"></i>`;
@@ -730,12 +721,10 @@
             
             updateUrlPreview();
             
-            // Atualiza Menu Ativo
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             const activeLink = document.querySelector(`.nav-link[data-tool="${toolKey}"][data-mode="${paramMode}"]`);
             if (activeLink) activeLink.classList.add('active');
 
-            // Troca de View
             document.getElementById('home-view').classList.remove('active');
             document.getElementById('tool-view').classList.add('active');
             
@@ -743,19 +732,16 @@
             window.scrollTo(0, 0);
         }
 
-        // Live URL Preview
         inputField.addEventListener('input', updateUrlPreview);
 
         function updateUrlPreview() {
             if (!currentTool) return;
             const val = inputField.value.trim();
-            // Encode apenas para visualização
             const displayVal = val ? val : 'VALUE';
             urlPreview.innerText = `${BASE_API}/${currentTool}?${currentParam}=${displayVal}`;
             urlPreview.scrollLeft = urlPreview.scrollWidth; 
         }
 
-        // Execução da API
         document.getElementById('executeBtn').addEventListener('click', async () => {
             const val = inputField.value.trim();
             if (!val) {
@@ -774,7 +760,6 @@
             jsonPre.innerText = 'Loading...';
 
             try {
-                // Monta URL real com encoding
                 const finalUrl = `${BASE_API}/${currentTool}?${currentParam}=${encodeURIComponent(val)}`;
                 
                 const res = await fetch(finalUrl);
@@ -784,7 +769,6 @@
                 jsonPre.innerText = lastJsonResponse;
                 resultArea.classList.add('active');
                 
-                // Scroll suave até o resultado
                 setTimeout(() => {
                     resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
@@ -802,7 +786,6 @@
             }
         });
 
-        // Utilitários de Cópia
         function copyUrl() {
             const text = urlPreview.innerText;
             navigator.clipboard.writeText(text).then(() => showToast('URL Copied!', 'success'));
@@ -813,7 +796,6 @@
             navigator.clipboard.writeText(lastJsonResponse).then(() => showToast('JSON Copied!', 'success'));
         }
 
-        // Sistema de Notificação (Toast)
         function showToast(msg, type) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -826,7 +808,6 @@
             
             container.appendChild(toast);
             
-            // Remove automaticamente
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
