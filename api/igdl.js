@@ -1,4 +1,5 @@
 const { igdl } = require('ruhend-scraper');
+const cheerio = require('cheerio'); 
 
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
