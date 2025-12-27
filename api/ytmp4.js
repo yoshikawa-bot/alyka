@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
 const yts = require('yt-search');
 
 const AXIOS_DEFAULTS = {
@@ -30,14 +30,14 @@ async function tryRequest(getter, attempts = 3) {
 
 async function getIzumiVideoByUrl(youtubeUrl) {
   const apiUrl = `${izumi.baseURL}/downloader/youtube?url=${encodeURIComponent(youtubeUrl)}&format=720`;
-  const res = await tryRequest(() => fetch(apiUrl, AXIOS_DEFAULTS).then(r => r.json()));
+  const res = await tryRequest(() => axios.get(apiUrl, AXIOS_DEFAULTS).then(r => r.data));
   if (res?.result?.download) return res.result;
   throw new Error('Izumi video api returned no download');
 }
 
 async function getOkatsuVideoByUrl(youtubeUrl) {
   const apiUrl = `https://okatsu-rolezapiiz.vercel.app/downloader/ytmp4?url=${encodeURIComponent(youtubeUrl)}`;
-  const res = await tryRequest(() => fetch(apiUrl, AXIOS_DEFAULTS).then(r => r.json()));
+  const res = await tryRequest(() => axios.get(apiUrl, AXIOS_DEFAULTS).then(r => r.data));
   if (res?.result?.mp4) {
     return { download: res.result.mp4, title: res.result.title };
   }
