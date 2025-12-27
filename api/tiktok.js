@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 const AXIOS_DEFAULTS = {
   timeout: 60000,
@@ -10,8 +10,8 @@ const AXIOS_DEFAULTS = {
 
 async function getTikwmByUrl(tiktokUrl) {
   const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(tiktokUrl)}?hd=1`;
-  const res = await fetch(apiUrl, AXIOS_DEFAULTS).then(r => r.json());
-  if (res?.data) return res.data;
+  const res = await axios.get(apiUrl, AXIOS_DEFAULTS);
+  if (res?.data?.data) return res.data.data;
   throw new Error('API tikwm returned no data');
 }
 
@@ -23,17 +23,15 @@ async function getTikwmSearch(query) {
     HD: 1
   });
 
-  const res = await fetch('https://tikwm.com/api/feed/search', {
-    method: 'POST',
+  const res = await axios.post('https://tikwm.com/api/feed/search', params, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'Cookie': 'current_language=en',
       'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36'
-    },
-    body: params
-  }).then(r => r.json());
+    }
+  });
 
-  if (res?.data?.videos) return res.data.videos;
+  if (res?.data?.data?.videos) return res.data.data.videos;
   throw new Error('API tikwm search returned no videos');
 }
 
