@@ -8,15 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- ESTILOS ORIGINAIS (MANTIDOS) --- */
         :root {
-            /* Palette */
             --primary: #0ea5e9; 
             --primary-dark: #0284c7;
-            --primary-bg: rgba(14, 165, 233, 0.1);
+            --primary-glow: rgba(14, 165, 233, 0.4);
             
             --secondary: #94a3b8;
             --text: #f8fafc;
-            --text-muted: #64748b;
             
             --bg-color: #050505;
             --card-bg: #0f0f0f;
@@ -25,11 +24,14 @@
             --success: #10b981;
             --error: #ef4444;
             
-            --sidebar-width: 280px;
-            --sidebar-glass: rgba(10, 10, 10, 0.75);
+            --sidebar-glass: rgba(10, 10, 10, 0.6);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', Arial, sans-serif;
@@ -39,19 +41,18 @@
             font-size: 15px;
             min-height: 100vh;
             overflow-x: hidden;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
-        /* --- HEADER --- */
         .header {
-            background-color: rgba(5, 5, 5, 0.6);
+            background-color: rgba(5, 5, 5, 0.8);
             border-bottom: 1px solid var(--border);
-            height: 65px;
+            height: 60px;
             flex-shrink: 0;
             z-index: 100;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             position: sticky;
@@ -71,44 +72,32 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 0.75rem;
             text-decoration: none;
             cursor: pointer;
-            transition: opacity 0.2s;
         }
-        .logo-container:hover { opacity: 0.9; }
 
         .logo-img {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
             object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .logo-info { display: flex; flex-direction: column; }
-        
         .logo-text {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: var(--text);
-            letter-spacing: -0.3px;
-            line-height: 1.1;
-        }
-        
-        .logo-sub {
-            font-size: 0.7rem;
-            color: var(--secondary);
-            font-weight: 400;
+            letter-spacing: -0.5px;
         }
 
         .menu-btn {
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text);
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -119,10 +108,8 @@
         .menu-btn:hover {
             border-color: var(--primary);
             color: var(--primary);
-            background: var(--primary-bg);
         }
 
-        /* --- SIDEBAR --- */
         .sidebar-overlay {
             position: fixed;
             inset: 0;
@@ -131,63 +118,54 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(2px);
         }
 
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
+        /* --- CSS DO NOVO MENU (ATUALIZADO) --- */
         .sidebar {
             position: fixed;
             top: 0;
-            right: calc(var(--sidebar-width) * -1);
-            width: var(--sidebar-width);
+            right: -300px; /* Ajustado */
+            width: 280px;  /* Ajustado para o novo layout */
             height: 100%;
             z-index: 999;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 1px solid var(--border);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
+            padding: 1.5rem;
             background: var(--sidebar-glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            box-shadow: -10px 0 40px rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
 
-        .sidebar.active { right: 0; }
+        .sidebar.active {
+            right: 0;
+        }
 
         .sidebar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem; /* Mais espaço */
+            padding-bottom: 0.5rem;
+            flex-shrink: 0;
         }
 
-        .sidebar-title-main { font-weight: 700; font-size: 1.1rem; }
-
-        .close-sidebar {
-            background: transparent;
-            border: none;
-            color: var(--secondary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        .close-sidebar:hover { background: rgba(255,255,255,0.1); color: var(--text); }
-
-        .sidebar-content {
+        .sidebar-scroll-content {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem;
+            padding-right: 5px;
         }
-
-        /* Accordion Menu Styles */
+        
+        /* Estilos do Acordeão (Novo Menu) */
         .menu-category {
             margin-bottom: 0.5rem;
             border-radius: 8px;
@@ -200,7 +178,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
+            padding: 12px 10px;
             background: transparent;
             border: none;
             color: var(--text);
@@ -209,24 +187,24 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            border-radius: 8px;
+            border-radius: 6px;
         }
 
         .category-btn:hover {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.05);
         }
 
         .category-btn.active {
             color: var(--primary);
         }
 
-        .category-left { display: flex; align-items: center; gap: 12px; }
+        .category-left { display: flex; align-items: center; gap: 10px; }
         .category-icon { width: 20px; text-align: center; color: var(--secondary); transition: 0.2s; }
         .category-btn.active .category-icon { color: var(--primary); }
 
         .arrow-icon {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--secondary);
             transition: transform 0.3s ease;
         }
 
@@ -237,143 +215,359 @@
             overflow: hidden;
             transition: max-height 0.3s ease-out, opacity 0.3s ease;
             opacity: 0;
-            background: rgba(0,0,0,0.2);
-            border-radius: 0 0 8px 8px;
+            background: rgba(0,0,0,0.3); /* Fundo levemente mais escuro para submenu */
+            border-radius: 8px;
         }
 
         .submenu.open {
-            max-height: 500px; /* Arbitrary large height */
+            max-height: 500px;
             opacity: 1;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
+        /* Nav Link atualizado para o submenu */
         .nav-link {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 14px 10px 46px; /* Indented to align with text above */
+            padding: 10px 10px 10px 40px; /* Indentação */
             color: var(--secondary);
             text-decoration: none;
-            font-size: 0.9rem;
             transition: all 0.2s;
-            position: relative;
+            font-size: 0.9rem;
+            border-left: 2px solid transparent;
         }
 
-        .nav-link:hover { color: var(--text); }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            left: 24px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--border);
-            transition: 0.2s;
+        .nav-link:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.02);
         }
-
-        .nav-link:hover::before { background: var(--text); }
 
         .nav-link.active {
             color: var(--primary);
-            background: var(--primary-bg);
+            border-left-color: var(--primary);
+            background: rgba(14, 165, 233, 0.05);
             font-weight: 500;
         }
-        .nav-link.active::before { background: var(--primary); }
 
-        /* Main Link (Direct link like Home) */
+        /* Link direto (Home) */
         .direct-link {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
+            gap: 10px;
+            padding: 12px 10px;
             color: var(--text);
             text-decoration: none;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-bottom: 0.5rem;
             transition: 0.2s;
         }
-        .direct-link:hover { background: rgba(255,255,255,0.03); }
-        .direct-link.active { color: var(--primary); background: var(--primary-bg); }
+        .direct-link:hover { background: rgba(255,255,255,0.05); }
+        .direct-link.active { color: var(--primary); background: rgba(14, 165, 233, 0.1); }
         .direct-link .icon { color: var(--secondary); width: 20px; text-align: center; }
         .direct-link.active .icon { color: var(--primary); }
 
 
-        /* --- MAIN CONTENT --- */
-        .main-scroll-area { flex: 1; width: 100%; }
+        /* --- RESTANTE DO CSS ORIGINAL --- */
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .close-sidebar:hover { color: var(--text); }
+
+        .main-scroll-area {
+            flex: 1;
+            width: 100%;
+        }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
-            min-height: calc(100vh - 65px);
+            padding: 1.5rem;
+            min-height: calc(100vh - 60px);
             display: flex;
             flex-direction: column;
         }
 
-        .view-section { display: none; flex: 1; animation: fadeIn 0.4s ease; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section {
+            display: none;
+            flex: 1;
+            animation: fadeIn 0.4s ease;
+        }
 
-        /* Hero */
-        .hero { text-align: center; padding: 4rem 1rem; display: flex; flex-direction: column; align-items: center; }
-        .hero-img { width: 90px; height: 90px; border-radius: 20px; margin-bottom: 1.5rem; box-shadow: 0 0 30px rgba(14, 165, 233, 0.25); border: 2px solid rgba(255,255,255,0.1); }
-        .hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.8rem; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { color: var(--secondary); font-size: 1rem; max-width: 500px; margin: 0 auto 2.5rem auto; line-height: 1.6; }
+        .view-section.active {
+            display: block;
+        }
 
-        .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; margin-top: 2rem; }
-        .info-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; text-align: center; transition: transform 0.2s; }
-        .info-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.15); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--secondary);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .grid-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .simple-footer {
+            margin-top: auto;
+            padding: 3rem 1rem 1rem 1rem;
+            text-align: center;
+            color: var(--secondary);
+            font-size: 0.8rem;
+            opacity: 0.6;
+            border: none;
+        }
+
+        .tool-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        .tool-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tool-title { font-size: 1.2rem; color: var(--text); }
+        .tool-subtitle { font-size: 0.85rem; color: var(--secondary); }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .dark-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+        }
         
-        .simple-footer { margin-top: auto; padding-top: 3rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+        .dark-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+        }
 
-        /* Tool Interface */
-        .tool-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); }
-        .tool-header { margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; }
-        .tool-icon-large { width: 50px; height: 50px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); border: 1px solid rgba(14, 165, 233, 0.2); }
-        .tool-title { font-size: 1.5rem; color: var(--text); font-weight: 700; margin-bottom: 0.2rem; }
-        .tool-subtitle { font-size: 0.9rem; color: var(--secondary); }
+        .endpoint-box {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
 
-        .form-label { display: block; margin-bottom: 0.6rem; color: var(--secondary); font-size: 0.85rem; font-weight: 500; }
-        .dark-input { width: 100%; background: #050505; border: 1px solid var(--border); padding: 1rem; border-radius: 10px; color: var(--text); font-family: 'Inter', sans-serif; transition: 0.3s; margin-bottom: 1.5rem; }
-        .dark-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+        .method-tag {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-right: 1px solid var(--border);
+        }
 
-        .endpoint-box { background: #050505; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; margin-bottom: 2rem; overflow: hidden; }
-        .method-tag { background: rgba(14, 165, 233, 0.15); color: var(--primary); padding: 0.9rem 1.2rem; font-weight: 700; font-size: 0.85rem; border-right: 1px solid var(--border); }
-        .url-display { flex: 1; background: transparent; border: none; color: var(--text-muted); padding: 0 1rem; font-family: 'Courier New', monospace; font-size: 0.9rem; white-space: nowrap; overflow-x: auto; }
-        .copy-btn-sm { background: transparent; border: none; border-left: 1px solid var(--border); color: var(--secondary); padding: 0.9rem 1.2rem; cursor: pointer; transition: 0.2s; }
+        .url-display {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            padding: 0 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow-x: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .url-display::-webkit-scrollbar { display: none; }
+
+        .copy-btn-sm {
+            background: transparent;
+            border: none;
+            border-left: 1px solid var(--border);
+            color: var(--secondary);
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
         .copy-btn-sm:hover { color: var(--text); background: rgba(255,255,255,0.05); }
 
-        .action-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 0.8rem; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); }
-        .action-btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 6px 15px rgba(14, 165, 233, 0.4); }
-        .action-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .action-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-btn:hover { background: var(--primary-dark); }
+        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .result-area { margin-top: 2rem; display: none; border-top: 1px solid var(--border); padding-top: 2rem; animation: fadeIn 0.3s ease; }
+        .result-area {
+            margin-top: 1.5rem;
+            display: none;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
         .result-area.active { display: block; }
-        
-        .json-container { position: relative; background: #050505; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-        .copy-json-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.08); border: none; color: var(--secondary); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
-        .copy-json-btn:hover { background: var(--primary); color: white; }
-        .json-pre { padding: 1.5rem; overflow-x: auto; color: #7dd3fc; font-family: 'Courier New', monospace; font-size: 0.85rem; margin: 0; max-height: 500px; overflow-y: auto; line-height: 1.6; }
 
-        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+        .json-container {
+            position: relative;
+            background: #080808;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .copy-json-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--secondary);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .copy-json-btn:hover { background: var(--primary); color: white; }
+
+        .json-pre {
+            padding: 1rem;
+            overflow-x: auto;
+            color: #a5d6ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
         .action-btn.loading .spinner { display: block; }
         .action-btn.loading span { display: none; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Toast */
-        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .toast { background: #1e1e1e; color: #fff; padding: 14px 28px; border-radius: 50px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.6); font-size: 0.95rem; display: flex; align-items: center; gap: 12px; animation: slideUpFade 0.3s ease; }
-        .toast.success { border-bottom: 2px solid var(--success); }
-        .toast.error { border-bottom: 2px solid var(--error); }
-        @keyframes slideUpFade { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            width: auto;
+        }
+
+        .toast {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 250px;
+            justify-content: center;
+            animation: slideUpFade 0.3s ease;
+        }
+        
+        .toast.success { border-bottom: 3px solid var(--success); }
+        .toast.error { border-bottom: 3px solid var(--error); }
+
+        @keyframes slideUpFade { 
+            from { transform: translateY(20px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
 
         @media (max-width: 768px) {
             .sidebar { width: 85%; right: -85%; }
             .container { padding: 1rem; }
-            .hero h1 { font-size: 1.8rem; }
+            .hero h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -381,13 +575,10 @@
 
     <header class="header">
         <div class="header-content">
-            <div class="logo-container" onclick="router('home')">
+            <a href="#" class="logo-container" onclick="router('home')">
                 <img src="https://yoshikawa-bot.github.io/cache/images/8700030b.jpg" alt="Logo" class="logo-img">
-                <div class="logo-info">
-                    <div class="logo-text">Alyka API</div>
-                    <div class="logo-sub">Yoshikawa Systems</div>
-                </div>
-            </div>
+                <div class="logo-text">Alyka API</div>
+            </a>
             
             <button class="menu-btn" id="openSidebarBtn">
                 <i class="fas fa-bars"></i>
@@ -396,39 +587,36 @@
     </header>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo-container">
-                <div class="logo-info">
-                    <div class="sidebar-title-main">Menu</div>
-                </div>
-            </div>
+            <div class="logo-text">Menu</div>
             <button class="close-sidebar" id="closeSidebarBtn">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
-        <div class="sidebar-content">
+        <div class="sidebar-scroll-content">
             <a href="#" class="direct-link active" id="nav-home" onclick="router('home')">
                 <i class="fas fa-home icon"></i> 
-                <span>Dashboard</span>
+                <span>Home</span>
             </a>
 
             <div class="menu-category">
                 <button class="category-btn" onclick="toggleSubmenu(this)">
                     <div class="category-left">
-                        <i class="fas fa-cloud-download-alt category-icon"></i>
+                        <i class="fas fa-download category-icon"></i>
                         <span>Downloads</span>
                     </div>
                     <i class="fas fa-chevron-down arrow-icon"></i>
                 </button>
                 <div class="submenu">
-                    <a href="#" class="nav-link" data-tool="ytmp3" data-mode="url" onclick="setupTool('ytmp3', 'url')">YouTube MP3 (Link)</a>
-                    <a href="#" class="nav-link" data-tool="ytmp3" data-mode="search" onclick="setupTool('ytmp3', 'search')">YouTube MP3 (Search)</a>
-                    <a href="#" class="nav-link" data-tool="ytmp4" data-mode="url" onclick="setupTool('ytmp4', 'url')">YouTube MP4 (Link)</a>
-                    <a href="#" class="nav-link" data-tool="ytmp4" data-mode="search" onclick="setupTool('ytmp4', 'search')">YouTube MP4 (Search)</a>
-                    <a href="#" class="nav-link" data-tool="tiktok" data-mode="url" onclick="setupTool('tiktok', 'url')">TikTok No-Watermark</a>
-                    <a href="#" class="nav-link" data-tool="igdl" data-mode="url" onclick="setupTool('igdl', 'url')">Instagram Reels/Post</a>
+                    <a href="#" class="nav-link" data-tool="ytmp3" data-mode="url" onclick="setupTool('ytmp3', 'url')">YT MP3 (URL)</a>
+                    <a href="#" class="nav-link" data-tool="ytmp3" data-mode="search" onclick="setupTool('ytmp3', 'search')">YT MP3 (Name)</a>
+                    <a href="#" class="nav-link" data-tool="ytmp4" data-mode="url" onclick="setupTool('ytmp4', 'url')">YT MP4 (URL)</a>
+                    <a href="#" class="nav-link" data-tool="ytmp4" data-mode="search" onclick="setupTool('ytmp4', 'search')">YT MP4 (Name)</a>
+                    <a href="#" class="nav-link" data-tool="tiktok" data-mode="url" onclick="setupTool('tiktok', 'url')">TikTok</a>
+                    <a href="#" class="nav-link" data-tool="igdl" data-mode="url" onclick="setupTool('igdl', 'url')">Instagram</a>
                 </div>
             </div>
 
@@ -441,21 +629,8 @@
                     <i class="fas fa-chevron-down arrow-icon"></i>
                 </button>
                 <div class="submenu">
-                    <a href="#" class="nav-link" data-tool="ytsearch" data-mode="query" onclick="setupTool('ytsearch', 'query')">YouTube Search</a>
+                    <a href="#" class="nav-link" data-tool="ytsearch" data-mode="query" onclick="setupTool('ytsearch', 'query')">YT Search</a>
                     <a href="#" class="nav-link" data-tool="tiktok" data-mode="query" onclick="setupTool('tiktok', 'query')">TikTok Search</a>
-                </div>
-            </div>
-            
-             <div class="menu-category">
-                <button class="category-btn" onclick="toggleSubmenu(this)">
-                    <div class="category-left">
-                        <i class="fas fa-robot category-icon"></i>
-                        <span>AI Tools</span>
-                    </div>
-                    <i class="fas fa-chevron-down arrow-icon"></i>
-                </button>
-                <div class="submenu">
-                    <a href="#" class="nav-link">Comming Soon...</a>
                 </div>
             </div>
 
@@ -467,42 +642,42 @@
             
             <section id="home-view" class="view-section active">
                 <div class="hero">
-                    <img src="https://yoshikawa-bot.github.io/cache/images/8700030b.jpg" alt="Logo" class="hero-img">
-                    <h1>Welcome to Alyka API</h1>
-                    <p>The official API solution by Yoshikawa Systems. Optimized for speed, security, and developer experience.</p>
+                    <img src="https://yoshikawa-bot.github.io/cache/images/8700030b.jpg" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.5rem; box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);">
+                    <h1>Welcome to Alyka API, a Yoshikawa system</h1>
+                    <p>Official API of Yoshikawa systems, free, fast, secure.</p>
                     
-                    <button class="action-btn" style="width: auto; padding: 0.8rem 2.5rem;" onclick="openSidebar()">
-                        Explore Endpoints <i class="fas fa-arrow-right"></i>
+                    <button class="action-btn" style="width: auto; margin: 0 auto; padding: 0.7rem 2rem;" onclick="openSidebar()">
+                        Start Testing <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
                     </button>
                 </div>
 
                 <div class="grid-features">
                     <div class="info-card">
-                        <i class="fas fa-bolt" style="color: var(--primary); font-size: 1.8rem; margin-bottom: 1rem;"></i>
-                        <h3>Lightning Fast</h3>
-                        <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 0.5rem;">Global edge network ensuring low latency responses.</p>
+                        <i class="fas fa-bolt" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                        <h3>Fast</h3>
+                        <p style="font-size: 0.8rem; color: var(--secondary);">Optimized for speed</p>
                     </div>
                     <div class="info-card">
-                        <i class="fas fa-shield-alt" style="color: var(--success); font-size: 1.8rem; margin-bottom: 1rem;"></i>
+                        <i class="fas fa-shield-alt" style="color: var(--success); font-size: 1.5rem; margin-bottom: 1rem;"></i>
                         <h3>Secure</h3>
-                        <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 0.5rem;">Enterprise grade security and encryption.</p>
+                        <p style="font-size: 0.8rem; color: var(--secondary);">Safe & Encrypted</p>
                     </div>
                     <div class="info-card">
-                        <i class="fas fa-cube" style="color: #a855f7; font-size: 1.8rem; margin-bottom: 1rem;"></i>
-                        <h3>Modern</h3>
-                        <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 0.5rem;">Restful architecture with clean JSON output.</p>
+                        <i class="fas fa-code" style="color: var(--text); font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                        <h3>JSON</h3>
+                        <p style="font-size: 0.8rem; color: var(--secondary);">Clean structure</p>
                     </div>
                 </div>
 
                 <footer class="simple-footer">
-                    &copy; 2025 Alyka API, a Yoshikawa System.
+                    &copy; 2025 Alyka API, a Yoshikawa System. All rights reserved.
                 </footer>
             </section>
 
             <section id="tool-view" class="view-section">
                 <div class="tool-container">
                     <div class="tool-header">
-                        <div id="toolIcon" class="tool-icon-large"></div>
+                        <div id="toolIcon" style="font-size: 1.5rem; color: var(--primary);"></div>
                         <div>
                             <h2 id="toolTitle" class="tool-title">Tool Name</h2>
                             <div id="toolDesc" class="tool-subtitle">Description</div>
@@ -510,34 +685,32 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" id="inputLabel">Enter Value</label>
-                        <input type="text" class="dark-input" id="toolInput" placeholder="Paste link or type query here...">
+                        <label class="form-label">Parameter Value</label>
+                        <input type="text" class="dark-input" id="toolInput" placeholder="Enter link or query...">
                     </div>
 
-                    <div class="form-label">Endpoint Structure</div>
+                    <div class="form-label" style="margin-bottom: 0.4rem;">Endpoint URL</div>
                     <div class="endpoint-box">
                         <div class="method-tag">GET</div>
                         <div class="url-display" id="urlPreview">https://alyka.vercel.app/api/...</div>
-                        <button class="copy-btn-sm" onclick="copyUrl()" title="Copy URL">
+                        <button class="copy-btn-sm" onclick="copyUrl()">
                             <i class="far fa-copy"></i>
                         </button>
                     </div>
 
                     <button class="action-btn" id="executeBtn">
-                        <span>Execute Request</span>
+                        <span>Send Request</span>
                         <div class="spinner"></div>
                     </button>
 
                     <div class="result-area" id="resultArea">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-check-circle"></i> Status 200 OK
-                            </span>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--success);">Response (200 OK)</span>
                         </div>
                         
                         <div class="json-container">
                             <button class="copy-json-btn" onclick="copyJson()">
-                                <i class="far fa-copy"></i> Copy JSON
+                                <i class="far fa-copy"></i> Copy
                             </button>
                             <pre class="json-pre" id="jsonResult">Loading...</pre>
                         </div>
@@ -554,11 +727,11 @@
         const BASE_API = "https://alyka.vercel.app/api";
 
         const toolsConfig = {
-            'ytmp3': { name: 'YouTube MP3', icon: 'fab fa-youtube', desc: 'Convert video to audio', param: 'url', altParam: 'search' },
-            'ytmp4': { name: 'YouTube MP4', icon: 'fab fa-youtube', desc: 'Download video format', param: 'url', altParam: 'search' },
-            'ytsearch': { name: 'YouTube Search', icon: 'fas fa-search', desc: 'Search for videos', param: 'query' },
-            'tiktok': { name: 'TikTok DL', icon: 'fab fa-tiktok', desc: 'Download without watermark', param: 'url', altParam: 'query' },
-            'igdl': { name: 'Instagram DL', icon: 'fab fa-instagram', desc: 'Download Reels, Posts, Stories', param: 'url' }
+            'ytmp3': { name: 'YouTube MP3', icon: 'fab fa-youtube', desc: 'Convert YouTube to MP3', param: 'url', altParam: 'search' },
+            'ytmp4': { name: 'YouTube MP4', icon: 'fab fa-youtube', desc: 'Convert YouTube to MP4', param: 'url', altParam: 'search' },
+            'ytsearch': { name: 'YouTube Search', icon: 'fab fa-youtube', desc: 'Search videos on YouTube', param: 'query' },
+            'tiktok': { name: 'TikTok DL', icon: 'fab fa-tiktok', desc: 'No watermark downloader', param: 'url', altParam: 'query' },
+            'igdl': { name: 'Instagram DL', icon: 'fab fa-instagram', desc: 'Reels/Video downloader', param: 'url' }
         };
 
         let currentTool = null;
@@ -570,7 +743,6 @@
         const urlPreview = document.getElementById('urlPreview');
         const inputField = document.getElementById('toolInput');
 
-        // Sidebar logic
         function openSidebar() {
             sidebar.classList.add('active');
             sidebarOverlay.classList.add('active');
@@ -580,8 +752,8 @@
             sidebar.classList.remove('active');
             sidebarOverlay.classList.remove('active');
         }
-        
-        // Accordion Logic
+
+        // Função do Acordeão (NOVA)
         function toggleSubmenu(button) {
             const submenu = button.nextElementSibling;
             button.classList.toggle('active');
@@ -594,7 +766,7 @@
 
         function router(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            // Remove active from links
+            // Remove active classes
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.direct-link').forEach(el => el.classList.remove('active'));
 
@@ -617,31 +789,27 @@
                 currentParam = config.param;
             }
 
-            // Update UI
             document.getElementById('toolTitle').innerText = config.name;
-            document.getElementById('toolDesc').innerText = config.desc;
+            document.getElementById('toolDesc').innerText = `Parameter: ${currentParam}`;
             document.getElementById('toolIcon').innerHTML = `<i class="${config.icon}"></i>`;
-            document.getElementById('inputLabel').innerText = paramMode === 'url' ? 'Paste Link' : 'Search Query';
             
             inputField.value = '';
-            inputField.placeholder = currentParam === 'url' ? 'https://...' : 'Type here...';
+            inputField.placeholder = currentParam === 'url' ? 'Paste link here...' : 'Type search term...';
             
             document.getElementById('resultArea').classList.remove('active');
             
             updateUrlPreview();
             
-            // Highlight sidebar item
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-home').classList.remove('active');
-            
-            // Find and activate the link
+
             const activeLink = document.querySelector(`.nav-link[data-tool="${toolKey}"][data-mode="${paramMode}"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
-                // Ensure parent menu is open (optional, but good UX)
-                const parentMenu = activeLink.closest('.submenu');
-                if(parentMenu && !parentMenu.classList.contains('open')) {
-                    const parentBtn = parentMenu.previousElementSibling;
+                // Opcional: Abrir o menu pai se estiver fechado
+                const parentSubmenu = activeLink.closest('.submenu');
+                if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
+                    const parentBtn = parentSubmenu.previousElementSibling;
                     toggleSubmenu(parentBtn);
                 }
             }
@@ -649,10 +817,7 @@
             document.getElementById('home-view').classList.remove('active');
             document.getElementById('tool-view').classList.add('active');
             
-            // On mobile, close sidebar after selection
-            if(window.innerWidth <= 768) {
-                closeSidebar();
-            }
+            closeSidebar();
         }
 
         inputField.addEventListener('input', updateUrlPreview);
@@ -660,16 +825,14 @@
         function updateUrlPreview() {
             if (!currentTool) return;
             const val = inputField.value.trim();
-            // Simple logic for display
-            urlPreview.innerText = `${BASE_API}/${currentTool}?${currentParam}=${val ? val : '...'}`;
+            urlPreview.innerText = `${BASE_API}/${currentTool}?${currentParam}=${val ? val : 'VALUE'}`;
             urlPreview.scrollLeft = urlPreview.scrollWidth; 
         }
 
         document.getElementById('executeBtn').addEventListener('click', async () => {
             const val = inputField.value.trim();
             if (!val) {
-                showToast('Please enter a value first', 'error');
-                inputField.focus();
+                showToast('Please enter a value', 'error');
                 return;
             }
 
@@ -691,12 +854,12 @@
                 jsonPre.innerText = lastJsonResponse;
                 resultArea.classList.add('active');
                 
-                showToast('Request successful', 'success');
+                showToast('Success!', 'success');
 
             } catch (err) {
                 jsonPre.innerText = `Error: ${err.message}`;
                 resultArea.classList.add('active');
-                showToast('Failed to fetch data', 'error');
+                showToast('Request failed', 'error');
             } finally {
                 btn.classList.remove('loading');
                 btn.disabled = false;
@@ -706,14 +869,14 @@
         function copyUrl() {
             const text = urlPreview.innerText;
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Endpoint URL Copied', 'success');
+                showToast('URL Copied!', 'success');
             });
         }
 
         function copyJson() {
             if (!lastJsonResponse) return;
             navigator.clipboard.writeText(lastJsonResponse).then(() => {
-                showToast('JSON Response Copied', 'success');
+                showToast('JSON Copied!', 'success');
             });
         }
 
