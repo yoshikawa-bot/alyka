@@ -393,7 +393,7 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       </div>
     </div>
     `}
-    <div class="caption">Yoshikawa Systems &copy; 2025</div>
+    <div class="caption">Yoshikawa Systems &copy; 2026</div>
   </div>
 </body>
 </html>`
