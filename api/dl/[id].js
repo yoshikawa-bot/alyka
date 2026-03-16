@@ -1,12 +1,9 @@
-if (!global._alykaStore) global._alykaStore = new Map()
-const store = global._alykaStore
-
-const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
+const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${expired ? 'Link Expirado' : `${title} — Download`}</title>
+  <title>${error ? 'Link Inválido' : `${title} — Download`}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -19,8 +16,6 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
       --text:      #eaeaea;
       --muted:     rgba(255,255,255,0.32);
       --accent:    #c8f04a;
-      --accent-dim:rgba(200,240,74,0.12);
-      --accent-mid:rgba(200,240,74,0.22);
       --red:       #ff4f4f;
       --red-dim:   rgba(255,79,79,0.1);
     }
@@ -55,7 +50,6 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
       max-width: 420px;
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
 
     .brand {
@@ -96,7 +90,6 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
       object-fit: cover;
       display: block;
       opacity: 0.85;
-      transition: opacity 0.3s;
     }
     .thumb-overlay {
       position: absolute;
@@ -194,7 +187,7 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .expired-icon {
+    .error-icon {
       width: 52px; height: 52px;
       border-radius: 16px;
       background: var(--red-dim);
@@ -203,16 +196,16 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
       margin: 0 auto 1.2rem;
       font-size: 1.4rem;
     }
-    .expired-title {
+    .error-title {
       font-size: 1.1rem; font-weight: 700;
       color: var(--text); margin-bottom: 0.4rem;
       text-align: center; letter-spacing: -0.02em;
     }
-    .expired-sub {
+    .error-sub {
       font-size: 0.78rem; color: var(--muted);
       text-align: center; line-height: 1.5;
     }
-    .expired-body { padding: 2rem 1.5rem; }
+    .error-body { padding: 2rem 1.5rem; }
 
     .footer {
       margin-top: 1.4rem;
@@ -238,11 +231,11 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
     </div>
 
     <div class="card">
-      ${expired ? `
-      <div class="expired-body">
-        <div class="expired-icon">⏳</div>
-        <div class="expired-title">Link Expirado</div>
-        <div class="expired-sub">Este link de download não é mais válido.<br>Solicite um novo pelo bot.</div>
+      ${error ? `
+      <div class="error-body">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Link Inválido</div>
+        <div class="error-sub">Este link de download é inválido.<br>Solicite um novo pelo bot.</div>
       </div>
       ` : `
       ${thumbnail ? `
@@ -264,7 +257,7 @@ const renderPage = ({ title, thumbnail, url, expired }) => `<!DOCTYPE html>
         </a>
         <div class="meta-row">
           <div class="meta-dot"></div>
-          <span class="meta-txt">Link expira em 30 minutos · via Yoshikawa Bot</span>
+          <span class="meta-txt">via Yoshikawa Bot</span>
         </div>
       </div>
       `}
@@ -281,21 +274,25 @@ module.exports = async (req, res) => {
   const { id } = req.query
 
   if (!id) {
-    return res.status(400).send(renderPage({ expired: true, title: '', thumbnail: null, url: '' }))
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    return res.status(400).send(renderPage({ error: true, title: '', thumbnail: null, url: '' }))
   }
 
-  const entry = store.get(id)
+  let parsed
+  try {
+    parsed = JSON.parse(Buffer.from(id, 'base64url').toString('utf-8'))
+  } catch {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    return res.status(400).send(renderPage({ error: true, title: '', thumbnail: null, url: '' }))
+  }
 
-  if (!entry || Date.now() > entry.expiresAt) {
-    store.delete(id)
-    return res.status(410).send(renderPage({ expired: true, title: '', thumbnail: null, url: '' }))
+  const { url, title, thumbnail } = parsed
+
+  if (!url) {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    return res.status(400).send(renderPage({ error: true, title: '', thumbnail: null, url: '' }))
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8')
-  return res.status(200).send(renderPage({
-    expired: false,
-    title: entry.title,
-    thumbnail: entry.thumbnail,
-    url: entry.url
-  }))
+  return res.status(200).send(renderPage({ error: false, title, thumbnail, url }))
 }
