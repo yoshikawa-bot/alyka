@@ -330,7 +330,7 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
         <div class="track-header">
           <div class="track-info">
             <div class="track-title">${title}</div>
-            <div class="track-source">via Yoshikawa Bot</div>
+            <div class="track-source">@kawalyansky</div>
           </div>
           <button class="heart-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
