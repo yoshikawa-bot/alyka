@@ -188,13 +188,11 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
     .play-btn {
       width: 52px; height: 52px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px) saturate(1.6);
-      -webkit-backdrop-filter: blur(20px) saturate(1.6);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
     }
-    .play-btn:active { background: rgba(255,255,255,0.06) !important; }
 
     .divider {
       height: 1px;
@@ -209,23 +207,28 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       width: 100%;
       height: 46px;
       border-radius: 14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #fff;
       font-family: inherit;
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
       letter-spacing: -0.02em;
       cursor: pointer;
-      backdrop-filter: blur(20px) saturate(1.6);
-      -webkit-backdrop-filter: blur(20px) saturate(1.6);
-      transition: transform 0.18s cubic-bezier(0.34,1.4,0.64,1), opacity 0.18s ease;
+      backdrop-filter: blur(8px);
+      transition: background 0.18s ease, transform 0.18s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.18s ease;
       position: relative;
       overflow: hidden;
     }
-    .dl-btn:hover { transform: scale(1.015); opacity: 0.85; }
-    .dl-btn:active { transform: scale(0.97); opacity: 1; }
+    .dl-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .dl-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.015); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+    .dl-btn:active { transform: scale(0.97); background: rgba(255,255,255,0.09); }
 
     .card-footer {
       display: flex;
@@ -390,7 +393,7 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       </div>
     </div>
     `}
-    <div class="caption">Yoshikawa Systems &copy; 2025</div>
+    <div class="caption">Yoshikawa Systems &copy; 2026</div>
   </div>
 </body>
 </html>`
