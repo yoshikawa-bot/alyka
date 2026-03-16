@@ -2,80 +2,82 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${error ? 'Link Inválido' : `${title} — Download`}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>${error ? 'Link Inválido — Alyka' : `${title} — Alyka`}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
 
     :root {
-      --bg:        #07080a;
-      --surface:   #0e1014;
-      --border:    rgba(255,255,255,0.07);
-      --text:      #eaeaea;
-      --muted:     rgba(255,255,255,0.32);
-      --accent:    #c8f04a;
-      --red:       #ff4f4f;
-      --red-dim:   rgba(255,79,79,0.1);
+      --primary:   #0A84FF;
+      --primary-dark: #007aff;
+      --success:   #34c759;
+      --error:     #ff453a;
+      --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-smooth:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    html, body {
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Sora', sans-serif;
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #050505;
+      color: #f5f5f7;
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
       overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(200,240,74,0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 50% at 80% 90%, rgba(200,240,74,0.03) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
+      background-image: radial-gradient(circle at 50% 0%, #1a1a1a, #050505 80%);
+      background-attachment: fixed;
     }
 
     .wrap {
-      position: relative;
-      z-index: 1;
       width: 100%;
       max-width: 420px;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      gap: 0;
+      animation: wrapIn 0.68s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes wrapIn {
+      from { opacity: 0; transform: translateY(22px) scale(0.93); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 9px;
-      margin-bottom: 2rem;
+      margin-bottom: 1.8rem;
+      animation: wrapIn 0.68s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
     }
     .brand img {
-      width: 26px; height: 26px;
-      border-radius: 7px;
-      border: 1px solid var(--border);
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
     }
     .brand-name {
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: rgba(255,255,255,0.32);
     }
 
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       overflow: hidden;
+      animation: wrapIn 0.68s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
     }
 
     .thumb-wrap {
@@ -89,37 +91,39 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       width: 100%; height: 100%;
       object-fit: cover;
       display: block;
-      opacity: 0.85;
+      opacity: 0.82;
+      transition: opacity 0.3s;
     }
     .thumb-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, transparent 40%, rgba(7,8,10,0.92) 100%);
+      background: linear-gradient(to bottom, transparent 35%, rgba(5,5,5,0.88) 100%);
     }
     .thumb-badge {
       position: absolute;
       top: 12px; left: 12px;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 3px 8px;
-      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 4px 10px;
       font-size: 0.62rem;
-      color: var(--accent);
-      backdrop-filter: blur(6px);
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      letter-spacing: 0.04em;
     }
 
     .card-body {
-      padding: 1.4rem 1.5rem 1.5rem;
+      padding: 1.4rem 1.5rem 1.6rem;
     }
 
     .video-title {
-      font-size: 1rem;
+      font-size: 0.975rem;
       font-weight: 600;
-      color: var(--text);
-      line-height: 1.4;
+      color: #f5f5f7;
+      line-height: 1.45;
       letter-spacing: -0.02em;
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.3rem;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -130,20 +134,19 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 9px;
       width: 100%;
-      padding: 0.9rem 1.4rem;
-      background: var(--accent);
-      color: #07080a;
-      font-family: 'Sora', sans-serif;
+      height: 44px;
+      border-radius: 50px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
       font-size: 0.875rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
+      font-weight: 600;
       text-decoration: none;
-      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-elastic);
       position: relative;
       overflow: hidden;
     }
@@ -151,71 +154,74 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.12);
       opacity: 0;
       transition: opacity 0.2s;
     }
-    .dl-btn:hover { transform: scale(1.025); box-shadow: 0 8px 28px rgba(200,240,74,0.28); }
+    .dl-btn:hover  { background: var(--primary-dark); transform: scale(1.03); box-shadow: 0 6px 22px rgba(10,132,255,0.35); }
     .dl-btn:hover::before { opacity: 1; }
     .dl-btn:active { transform: scale(0.97); }
 
-    .dl-icon {
-      width: 20px; height: 20px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin: 1.1rem 0;
     }
-    .dl-icon svg { width: 18px; height: 18px; }
 
     .meta-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
+      gap: 7px;
     }
     .meta-dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--accent);
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--success);
       flex-shrink: 0;
-      animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 6px rgba(52,199,89,0.5);
+      animation: dotPulse 2s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(1.4);} }
     .meta-txt {
-      font-size: 0.68rem;
-      color: var(--muted);
-      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.28);
+      font-weight: 500;
     }
 
+    .error-body {
+      padding: 2.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .error-icon {
-      width: 52px; height: 52px;
+      width: 54px; height: 54px;
       border-radius: 16px;
-      background: var(--red-dim);
-      border: 1px solid rgba(255,79,79,0.18);
+      background: rgba(255,69,58,0.1);
+      border: 1px solid rgba(255,69,58,0.18);
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1.2rem;
       font-size: 1.4rem;
+      margin-bottom: 1.1rem;
     }
     .error-title {
-      font-size: 1.1rem; font-weight: 700;
-      color: var(--text); margin-bottom: 0.4rem;
-      text-align: center; letter-spacing: -0.02em;
+      font-size: 1.05rem; font-weight: 700;
+      color: #f5f5f7; margin-bottom: 0.4rem;
+      letter-spacing: -0.02em;
     }
     .error-sub {
-      font-size: 0.78rem; color: var(--muted);
-      text-align: center; line-height: 1.5;
+      font-size: 0.775rem; color: rgba(255,255,255,0.32);
+      text-align: center; line-height: 1.55;
     }
-    .error-body { padding: 2rem 1.5rem; }
 
     .footer {
-      margin-top: 1.4rem;
+      margin-top: 1.3rem;
       text-align: center;
+      animation: wrapIn 0.68s cubic-bezier(0.34, 1.56, 0.64, 1) 0.18s both;
     }
     .footer-txt {
-      font-size: 0.62rem;
-      color: rgba(255,255,255,0.12);
-      letter-spacing: 0.06em;
-      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      color: rgba(255,255,255,0.1);
+      letter-spacing: 0.05em;
+      font-weight: 500;
     }
 
     @media (max-width: 480px) {
@@ -233,7 +239,7 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
     <div class="card">
       ${error ? `
       <div class="error-body">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon"><i class="fas fa-triangle-exclamation" style="color:#ff453a;font-size:1.2rem;"></i></div>
         <div class="error-title">Link Inválido</div>
         <div class="error-sub">Este link de download é inválido.<br>Solicite um novo pelo bot.</div>
       </div>
@@ -242,29 +248,26 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       <div class="thumb-wrap">
         <img src="${thumbnail}" alt="${title}" onerror="this.parentElement.style.display='none'">
         <div class="thumb-overlay"></div>
-        <div class="thumb-badge">MP4 · 480p</div>
+        <div class="thumb-badge"><i class="fab fa-youtube" style="margin-right:5px;"></i>MP4 · 480p</div>
       </div>
       ` : ''}
       <div class="card-body">
         <div class="video-title">${title}</div>
         <a class="dl-btn" href="${url}" download>
-          <span class="dl-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3v13M6 11l6 6 6-6"/><path d="M3 21h18"/>
-            </svg>
-          </span>
+          <i class="fas fa-download" style="font-size:0.82rem;"></i>
           Baixar Vídeo
         </a>
+        <div class="divider"></div>
         <div class="meta-row">
           <div class="meta-dot"></div>
-          <span class="meta-txt">via Yoshikawa Bot</span>
+          <span class="meta-txt">via Yoshikawa Bot &nbsp;·&nbsp; Alyka API</span>
         </div>
       </div>
       `}
     </div>
 
     <div class="footer">
-      <span class="footer-txt">ALYKA API · YOSHIKAWA SYSTEMS · 2025</span>
+      <span class="footer-txt">Alyka API &copy; 2025 Yoshikawa Systems</span>
     </div>
   </div>
 </body>
