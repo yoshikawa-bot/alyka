@@ -88,21 +88,6 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       background: linear-gradient(to bottom, transparent 55%, rgba(14,14,18,0.85) 100%);
     }
 
-    .format-pill {
-      position: absolute;
-      top: 14px; right: 14px;
-      z-index: 2;
-      background: rgba(0,0,0,0.48);
-      border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 20px;
-      padding: 4px 10px;
-      font-size: 0.62rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.7);
-      letter-spacing: 0.07em;
-      backdrop-filter: blur(12px);
-    }
-
     .card-body {
       padding: 1rem 1.4rem 1.2rem;
     }
@@ -323,7 +308,6 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
       ${thumbnail ? `
       <div class="artwork-wrap">
         <img src="${thumbnail}" alt="${title}" onerror="this.parentElement.style.display='none'">
-        <div class="format-pill">MP4 · 720p</div>
       </div>
       ` : ''}
       <div class="card-body">
@@ -381,7 +365,7 @@ const renderPage = ({ title, thumbnail, url, error }) => `<!DOCTYPE html>
 
         <div class="divider"></div>
 
-        <a class="dl-btn" href="${url}" download>Baixar Vídeo</a>
+        <a class="dl-btn" href="${url}" download>Baixar</a>
 
         <div class="card-footer">
           <div class="footer-meta">
