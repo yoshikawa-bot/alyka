@@ -1,1303 +1,687 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Alyka API — Yoshikawa Systems</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0a;
-            color: #d4d4d4;
-            line-height: 1.6;
-            font-size: 15px;
-            min-height: 100vh;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #181818, #0a0a0a 80%);
-            background-attachment: fixed;
-        }
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-        button {
-            font-family: inherit;
-            border: none;
-            outline: none;
-            background: none;
-            cursor: pointer;
-            font-size: inherit;
-            color: inherit;
-        }
-        :root {
-            --pill-h: 42px;
-            --radius: 50px;
-            --max-pill: 480px;
-            --accent: #6c8cff;
-            --accent-dim: #4a63cc;
-            --border: rgba(255, 255, 255, 0.08);
-            --surface: rgba(255, 255, 255, 0.03);
-            --surface-hover: rgba(255, 255, 255, 0.06);
-            --text: #d4d4d4;
-            --text-dim: rgba(255, 255, 255, 0.35);
-            --text-faint: rgba(255, 255, 255, 0.18);
-            --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alyka API — Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0a0c;
+  --surface:#131316;
+  --surface-2:#1a1b1f;
+  --border:#222227;
+  --border-soft:#1c1d21;
+  --text:#edeef0;
+  --text-muted:#93949a;
+  --text-faint:#56575d;
+  --accent:#3d7fff;
+  --accent-soft:rgba(61,127,255,.12);
+  --accent-soft-strong:rgba(61,127,255,.2);
+  --success:#27c281;
+  --success-soft:rgba(39,194,129,.12);
+  --error:#f0544c;
+  --error-soft:rgba(240,84,76,.12);
+  --radius:10px;
+  --sidebar-w:272px;
+  --topbar-h:56px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;}
+code,.mono{font-family:'JetBrains Mono',monospace;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
 
-        .bar-container {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 90%;
-            max-width: var(--max-pill);
-            top: 18px;
-            transition: transform 0.35s var(--ease);
-        }
-        .bar-container.scrolled {
-            transform: translateX(-50%) translateY(-4px);
-        }
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  z-index:300;
+  transition:transform .26s ease;
+}
+.sidebar-head{
+  display:flex;align-items:center;gap:11px;
+  padding:18px 18px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.brand-logo{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);object-fit:cover;flex-shrink:0;}
+.brand-name{font-size:.92rem;font-weight:700;letter-spacing:-.01em;color:#fff;}
+.brand-sub{font-size:.7rem;color:var(--text-faint);margin-top:1px;}
 
-        .round-btn {
-            width: var(--pill-h);
-            height: var(--pill-h);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-dim);
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            transition: all 0.25s var(--ease);
-            font-size: 13px;
-        }
-        .round-btn:hover {
-            background: var(--surface-hover);
-            color: #fff;
-        }
-        .round-btn:active {
-            transform: scale(0.93);
-        }
-        .round-btn.is-open {
-            background: rgba(108, 140, 255, 0.12);
-            border-color: rgba(108, 140, 255, 0.25);
-            color: var(--accent);
-        }
+.sidebar-nav{flex:1;overflow-y:auto;padding:14px 12px;}
+.sidebar-nav::-webkit-scrollbar{width:0;}
+.nav-label{
+  font-size:.66rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-faint);padding:6px 10px;margin-top:14px;
+}
+.nav-label:first-child{margin-top:0;}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;
+  font-size:.86rem;font-weight:500;color:var(--text-muted);
+  border-left:2px solid transparent;
+  transition:background .15s ease,color .15s ease;
+  cursor:pointer;
+}
+.nav-link:hover{background:var(--surface-2);color:#fff;}
+.nav-link.active{color:#fff;background:var(--accent-soft);border-left-color:var(--accent);}
+.nav-icon-plain{width:16px;text-align:center;font-size:.78rem;color:inherit;flex-shrink:0;}
+.nav-chip{
+  width:22px;height:22px;border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.68rem;
+}
+.nav-link-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-method{font-size:.6rem;font-weight:600;color:var(--text-faint);font-family:'JetBrains Mono',monospace;}
 
-        .pill-container {
-            height: var(--pill-h);
-            flex: 1;
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s var(--ease);
-        }
-        .bar-label {
-            font-size: 0.88rem;
-            font-weight: 500;
-            color: #fff;
-            letter-spacing: -0.01em;
-            transition: opacity 0.2s;
-        }
+.sidebar-foot{
+  padding:14px 18px;border-top:1px solid var(--border);flex-shrink:0;
+}
+.foot-row{display:flex;align-items:center;gap:7px;font-size:.74rem;color:var(--text-muted);margin-bottom:6px;}
+.foot-dot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 6px rgba(39,194,129,.6);}
+.foot-base{font-size:.68rem;color:var(--text-faint);font-family:'JetBrains Mono',monospace;word-break:break-all;}
 
-        .overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 300;
-            background: rgba(0, 0, 0, 0);
-            visibility: hidden;
-            transition: background 0.3s, visibility 0.3s;
-        }
-        .overlay.active {
-            background: rgba(0, 0, 0, 0.5);
-            visibility: visible;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-        }
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:280;
+  opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease;
+}
+.overlay.show{opacity:1;visibility:visible;}
 
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 280px;
-            z-index: 400;
-            display: flex;
-            flex-direction: column;
-            background: rgba(14, 14, 16, 0.85);
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border-left: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: -16px 0 40px rgba(0, 0, 0, 0.5);
-            transform: translateX(100%);
-            transition: transform 0.32s var(--ease);
-            will-change: transform;
-        }
-        .sidebar.active {
-            transform: translateX(0);
-        }
+.main{margin-left:var(--sidebar-w);min-height:100vh;}
+.topbar{
+  position:sticky;top:0;z-index:120;
+  height:var(--topbar-h);
+  display:flex;align-items:center;gap:12px;
+  padding:0 22px;
+  background:rgba(10,10,12,.86);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.icon-btn{
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);font-size:.85rem;
+  background:transparent;border:1px solid transparent;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+}
+.icon-btn:hover{background:var(--surface-2);color:#fff;border-color:var(--border);}
+.menu-btn{display:none;}
+.topbar-title{font-size:.88rem;font-weight:600;color:#fff;}
+.topbar-crumb{font-size:.78rem;color:var(--text-faint);}
 
-        .sidebar-top {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            flex-shrink: 0;
-        }
-        .sidebar-brand {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-        .sidebar-brand img {
-            width: 28px;
-            height: 28px;
-            border-radius: 7px;
-            object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            flex-shrink: 0;
-        }
-        .sidebar-brand-name {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: -0.02em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .sidebar-close {
-            width: var(--pill-h);
-            height: var(--pill-h);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.35);
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            transition: all 0.25s var(--ease);
-        }
-        .sidebar-close:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-        }
-        .sidebar-close:active {
-            transform: scale(0.92);
-        }
+.content{max-width:760px;margin:0 auto;padding:42px 24px 90px;}
+.view{display:none;}
+.view.active{display:block;animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-        .sidebar-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 8px;
-            scrollbar-width: none;
-        }
-        .sidebar-body::-webkit-scrollbar {
-            display: none;
-        }
+.page-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.page-title{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;color:#fff;margin-bottom:10px;}
+.page-desc{font-size:.92rem;color:var(--text-muted);max-width:520px;margin-bottom:30px;}
 
-        .nav-section {
-            font-size: 0.6rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.14);
-            padding: 8px 10px 4px;
-            margin-top: 6px;
-        }
-        .nav-section:first-child {
-            margin-top: 0;
-        }
+.index-list{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.index-row{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 16px;
+  border-bottom:1px solid var(--border-soft);
+  background:var(--surface);
+  cursor:pointer;
+  transition:background .15s ease;
+}
+.index-row:last-child{border-bottom:none;}
+.index-row:hover{background:var(--surface-2);}
+.chip{
+  width:38px;height:38px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.chip-yt{background:rgba(255,59,48,.12);color:#ff5147;}
+.chip-tt{background:rgba(254,44,85,.12);color:#fe2c55;}
+.chip-ig{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);color:#fff;}
+.index-info{flex:1;min-width:0;}
+.index-name{font-size:.88rem;font-weight:600;color:#fff;margin-bottom:2px;}
+.index-path{font-size:.75rem;color:var(--text-faint);}
+.badge{
+  font-size:.64rem;font-weight:700;letter-spacing:.04em;
+  padding:3px 7px;border-radius:5px;
+  background:var(--accent-soft);color:var(--accent);
+  font-family:'JetBrains Mono',monospace;flex-shrink:0;
+}
+.index-chevron{color:var(--text-faint);font-size:.72rem;flex-shrink:0;}
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-dim);
-            transition: all 0.2s;
-            margin-bottom: 1px;
-            cursor: pointer;
-        }
-        .nav-item:hover {
-            background: var(--surface-hover);
-            color: #fff;
-        }
-        .nav-item.active {
-            background: rgba(108, 140, 255, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(108, 140, 255, 0.15);
-        }
-        .nav-ico {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.2s;
-        }
-        .nav-item.active .nav-ico {
-            background: rgba(108, 140, 255, 0.13);
-            border-color: rgba(108, 140, 255, 0.2);
-        }
-        .nav-item:hover .nav-ico {
-            background: rgba(255, 255, 255, 0.06);
-        }
+.breadcrumb{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--text-faint);margin-bottom:14px;}
+.breadcrumb a{color:var(--text-muted);cursor:pointer;}
+.breadcrumb a:hover{color:#fff;}
 
-        .nav-group {
-            margin-bottom: 1px;
-        }
-        .nav-group-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-dim);
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .nav-group-btn:hover {
-            background: var(--surface-hover);
-            color: #fff;
-        }
-        .nav-group-btn .nav-ico {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.2s;
-        }
-        .nav-group-btn.open {
-            color: #fff;
-        }
-        .nav-group-btn.open .nav-ico {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        .nav-group-label {
-            flex: 1;
-            text-align: left;
-        }
-        .nav-chevron {
-            font-size: 0.58rem;
-            color: rgba(255, 255, 255, 0.18);
-            transition: transform 0.3s var(--ease);
-        }
-        .nav-group-btn.open .nav-chevron {
-            transform: rotate(180deg);
-            color: rgba(255, 255, 255, 0.35);
-        }
+.tool-title-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.tool-title-row .chip{width:42px;height:42px;font-size:1.05rem;}
+.tool-title-text h1{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;color:#fff;}
+.endpoint-tag{display:flex;align-items:center;gap:7px;margin-top:3px;}
+.endpoint-tag .badge{background:var(--success-soft);color:var(--success);}
+.endpoint-path{font-size:.78rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
 
-        .nav-sub {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s var(--ease), opacity 0.22s;
-            opacity: 0;
-        }
-        .nav-sub.open {
-            max-height: 400px;
-            opacity: 1;
-        }
-        .nav-sub-item {
-            display: flex;
-            align-items: center;
-            padding: 7px 10px 7px 48px;
-            border-radius: 8px;
-            font-size: 0.78rem;
-            color: rgba(255, 255, 255, 0.3);
-            transition: all 0.18s;
-            position: relative;
-            cursor: pointer;
-            margin-bottom: 1px;
-        }
-        .nav-sub-item::before {
-            content: '';
-            position: absolute;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.12);
-            transition: all 0.18s;
-        }
-        .nav-sub-item:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.03);
-        }
-        .nav-sub-item:hover::before {
-            background: rgba(255, 255, 255, 0.4);
-            transform: translateY(-50%) scale(1.5);
-        }
-        .nav-sub-item.active {
-            color: var(--accent);
-            font-weight: 500;
-        }
-        .nav-sub-item.active::before {
-            background: var(--accent);
-            transform: translateY(-50%) scale(1.5);
-        }
+.tool-desc{font-size:.88rem;color:var(--text-muted);margin:14px 0 26px;max-width:560px;}
 
-        .sidebar-foot {
-            padding: 10px 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.62rem;
-            color: rgba(255, 255, 255, 0.12);
-            text-align: center;
-            flex-shrink: 0;
-            letter-spacing: 0.02em;
-        }
+.section-block{margin-bottom:26px;}
+.section-label{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px;}
 
-        .container {
-            max-width: 780px;
-            margin: 0 auto;
-            padding: 6rem 1.5rem 6rem;
-        }
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:3px;gap:2px;}
+.seg-btn{
+  padding:6px 14px;border-radius:6px;font-size:.8rem;font-weight:500;color:var(--text-muted);
+  transition:background .15s ease,color .15s ease;
+}
+.seg-btn.active{background:var(--accent);color:#fff;}
 
-        .view {
-            display: none;
-        }
-        .view.active {
-            display: block;
-            animation: viewIn 0.35s var(--ease);
-        }
-        @keyframes viewIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.param-table{width:100%;border:1px solid var(--border);border-radius:var(--radius);border-collapse:collapse;overflow:hidden;}
+.param-table th{
+  text-align:left;font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text-faint);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--border);
+}
+.param-table td{padding:10px 12px;font-size:.82rem;color:var(--text-muted);border-bottom:1px solid var(--border-soft);}
+.param-table tr:last-child td{border-bottom:none;}
+.param-table td code{color:var(--accent);background:var(--accent-soft);padding:2px 6px;border-radius:5px;font-size:.76rem;}
+.req-yes{color:var(--success);font-weight:600;}
 
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 2.5rem 1rem 1.5rem;
-        }
-        .hero-logo {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 32px rgba(108, 140, 255, 0.1);
-            margin-bottom: 1.2rem;
-            animation: heroUp 0.6s var(--ease) backwards;
-        }
-        .hero h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            color: #fff;
-            margin-bottom: 0.4rem;
-            animation: heroUp 0.6s var(--ease) 0.06s backwards;
-        }
-        .hero p {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-            max-width: 360px;
-            margin-bottom: 1.6rem;
-            animation: heroUp 0.6s var(--ease) 0.1s backwards;
-        }
-        @keyframes heroUp {
-            from {
-                opacity: 0;
-                transform: translateY(18px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
+.field-label{display:block;font-size:.78rem;font-weight:500;color:var(--text-muted);margin-bottom:7px;}
+.field{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:10px 13px;color:#fff;font-size:.86rem;font-family:inherit;
+  transition:border-color .15s ease,background .15s ease;
+}
+.field::placeholder{color:var(--text-faint);}
+.field:focus{border-color:var(--accent);background:var(--surface-2);}
 
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 0 20px;
-            height: var(--pill-h);
-            border-radius: var(--radius);
-            background: rgba(108, 140, 255, 0.1);
-            border: 1px solid rgba(108, 140, 255, 0.2);
-            color: var(--accent);
-            font-size: 0.84rem;
-            font-weight: 500;
-            transition: all 0.3s var(--ease);
-            animation: heroUp 0.6s var(--ease) 0.14s backwards;
-        }
-        .cta-btn:hover {
-            background: rgba(108, 140, 255, 0.18);
-            transform: scale(1.03);
-        }
-        .cta-btn:active {
-            transform: scale(0.96);
-        }
+.code-block{
+  background:#0d0e10;border:1px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;gap:10px;padding:11px 13px;
+}
+.code-method{color:var(--success);font-weight:700;font-size:.74rem;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.code-url{
+  flex:1;font-size:.76rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;
+  white-space:nowrap;overflow-x:auto;
+}
+.code-url::-webkit-scrollbar{display:none;}
+.code-url b{color:#fff;font-weight:500;}
 
-        .feat-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 2.2rem;
-            width: 100%;
-        }
-        .feat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1rem 0.8rem;
-            text-align: center;
-            transition: all 0.3s var(--ease);
-            animation: cardUp 0.55s var(--ease) backwards;
-        }
-        .feat-card:nth-child(1) {
-            animation-delay: 0.14s;
-        }
-        .feat-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .feat-card:nth-child(3) {
-            animation-delay: 0.26s;
-        }
-        .feat-card:hover {
-            background: var(--surface-hover);
-            transform: translateY(-4px);
-        }
-        @keyframes cardUp {
-            from {
-                opacity: 0;
-                transform: translateY(22px) scale(0.93);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        .feat-ico {
-            width: 34px;
-            height: 34px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.6rem;
-            font-size: 0.85rem;
-        }
-        .fi-accent {
-            background: rgba(108, 140, 255, 0.1);
-            color: var(--accent);
-        }
-        .fi-green {
-            background: rgba(52, 199, 89, 0.08);
-            color: #34c759;
-        }
-        .fi-neutral {
-            background: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.45);
-        }
-        .feat-card h3 {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 2px;
-        }
-        .feat-card p {
-            font-size: 0.68rem;
-            color: var(--text-dim);
-        }
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:40px;padding:0 18px;border-radius:8px;font-size:.85rem;font-weight:600;
+  transition:background .15s ease,opacity .15s ease;
+}
+.btn-icon{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  background:transparent;border:1px solid var(--border);color:var(--text-muted);
+}
+.btn-icon:hover{color:#fff;border-color:var(--text-faint);}
+.btn-primary{background:var(--accent);color:#fff;width:100%;}
+.btn-primary:hover{background:#2f6fe8;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-primary .spin{
+  width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:none;
+}
+.btn-primary.loading .spin{display:block;}
+.btn-primary.loading .btn-text{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.2rem;
-        }
-        .page-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            color: #fff;
-        }
-        .status-dots {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            animation: dotPulse 2s ease-in-out infinite;
-        }
-        .dot.r {
-            background: #ff453a;
-            box-shadow: 0 2px 6px rgba(255, 69, 58, 0.35);
-        }
-        .dot.y {
-            background: #ffd60a;
-            box-shadow: 0 2px 6px rgba(255, 214, 10, 0.35);
-            animation-delay: 0.3s;
-        }
-        .dot.g {
-            background: #34c759;
-            box-shadow: 0 2px 6px rgba(52, 199, 89, 0.35);
-            animation-delay: 0.6s;
-        }
-        @keyframes dotPulse {
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.5);
-                opacity: 0.45;
-            }
-        }
+.response-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.status-pill{display:flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;}
+.status-pill .dot{width:7px;height:7px;border-radius:50%;}
+.status-ok{color:var(--success);}
+.status-ok .dot{background:var(--success);box-shadow:0 0 6px rgba(39,194,129,.6);}
+.status-err{color:var(--error);}
+.status-err .dot{background:var(--error);box-shadow:0 0 6px rgba(240,84,76,.6);}
 
-        .tool-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 1.5rem;
-        }
-        .tool-head {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 1rem;
-            margin-bottom: 1.2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .tool-icon-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 11px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: var(--accent);
-            background: rgba(108, 140, 255, 0.08);
-            border: 1px solid rgba(108, 140, 255, 0.14);
-        }
-        .tool-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: -0.02em;
-        }
-        .tool-hint {
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            margin-top: 1px;
-        }
+.response-panel{
+  background:#0d0e10;border:1px solid var(--border);border-radius:var(--radius);
+  min-height:120px;overflow:hidden;
+}
+.response-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:34px 20px;text-align:center;color:var(--text-faint);font-size:.82rem;gap:8px;
+}
+.response-empty i{font-size:1.1rem;opacity:.6;}
+.response-json{display:none;}
+.response-json.show{display:block;}
+.response-json pre{
+  margin:0;padding:16px;color:#a8d4ff;font-family:'JetBrains Mono',monospace;font-size:.78rem;
+  max-height:380px;overflow:auto;line-height:1.6;
+}
+.response-json pre::-webkit-scrollbar{width:5px;}
+.response-json pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.response-toolbar{
+  display:flex;justify-content:flex-end;padding:8px 10px;border-top:1px solid var(--border);
+}
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.64rem;
-            font-weight: 600;
-            color: var(--text-faint);
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-        }
-        .field {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            padding: 0.65rem 0.9rem;
-            border-radius: 9px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.84rem;
-            transition: all 0.22s;
-        }
-        .field::placeholder {
-            color: rgba(255, 255, 255, 0.16);
-        }
-        .field:focus {
-            outline: none;
-            border-color: rgba(108, 140, 255, 0.35);
-            box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.06);
-            background: rgba(0, 0, 0, 0.4);
-        }
+.toast-stack{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{
+  display:flex;align-items:center;gap:10px;padding:11px 15px;border-radius:9px;min-width:240px;
+  background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--accent);
+  font-size:.82rem;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.success{border-left-color:var(--success);}
+.toast.error{border-left-color:var(--error);}
+.toast i{font-size:.85rem;flex-shrink:0;}
+.toast.success i{color:var(--success);}
+.toast.error i{color:var(--error);}
+.toast.info i{color:var(--accent);}
 
-        .endpoint-row {
-            display: flex;
-            align-items: stretch;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 9px;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-        .ep-method {
-            padding: 0 11px;
-            background: rgba(108, 140, 255, 0.07);
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
-            color: var(--accent);
-            font-size: 0.66rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
-        .ep-url {
-            flex: 1;
-            padding: 0.65rem 9px;
-            color: rgba(255, 255, 255, 0.3);
-            font-family: 'Courier New', monospace;
-            font-size: 0.7rem;
-            white-space: nowrap;
-            overflow-x: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            background: transparent;
-            display: flex;
-            align-items: center;
-        }
-        .ep-url::-webkit-scrollbar {
-            display: none;
-        }
-        .ep-copy {
-            padding: 0 10px;
-            border-left: 1px solid rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.22);
-            font-size: 0.76rem;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        .ep-copy:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.04);
-        }
+@media (max-width:960px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-btn{display:flex;}
+  .content{padding:30px 18px 80px;}
+}
 
-        .send-btn {
-            width: 100%;
-            height: var(--pill-h);
-            border-radius: var(--radius);
-            background: var(--accent);
-            color: #fff;
-            font-size: 0.84rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            transition: all 0.3s var(--ease);
-        }
-        .send-btn:hover {
-            background: var(--accent-dim);
-            transform: scale(1.01);
-        }
-        .send-btn:active {
-            transform: scale(0.97);
-        }
-        .send-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .send-btn .spin {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            display: none;
-        }
-        .send-btn.loading .spin {
-            display: block;
-        }
-        .send-btn.loading .btn-lbl {
-            display: none;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .result-box {
-            display: none;
-            margin-top: 1.2rem;
-            padding-top: 1.2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .result-box.show {
-            display: block;
-        }
-        .result-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .ok-badge {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: #34c759;
-        }
-        .ok-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #34c759;
-            box-shadow: 0 0 6px rgba(52, 199, 89, 0.5);
-            animation: okPulse 1.6s ease-in-out infinite;
-        }
-        @keyframes okPulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.35;
-            }
-        }
-        .copy-json {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 9px;
-            border-radius: 6px;
-            font-size: 0.66rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            color: var(--text-dim);
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-        .copy-json:hover {
-            background: rgba(108, 140, 255, 0.1);
-            border-color: rgba(108, 140, 255, 0.22);
-            color: var(--accent);
-        }
-        .json-wrap {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .json-pre {
-            padding: 0.9rem;
-            overflow: auto;
-            color: #a5c8ff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.7rem;
-            margin: 0;
-            max-height: 340px;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
-        }
-        .json-pre::-webkit-scrollbar {
-            width: 4px;
-        }
-        .json-pre::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 4px;
-        }
-
-        .site-footer {
-            margin-top: 2.5rem;
-            padding: 1.8rem 1rem;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .site-footer .f1 {
-            font-size: 0.74rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.22);
-        }
-        .site-footer .f2 {
-            font-size: 0.64rem;
-            color: rgba(255, 255, 255, 0.12);
-            font-style: italic;
-        }
-        .site-footer .f3 {
-            font-size: 0.58rem;
-            color: rgba(255, 255, 255, 0.08);
-            font-family: 'Courier New', monospace;
-        }
-
-        .toast {
-            position: fixed;
-            top: 22px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-120%);
-            z-index: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-radius: 20px;
-            background: rgba(24, 24, 28, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: auto;
-            cursor: default;
-            max-width: 88%;
-        }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        .toast-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .toast-dot.success {
-            background: #34c759;
-            box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
-        }
-        .toast-dot.error {
-            background: #ff453a;
-            box-shadow: 0 0 8px rgba(255, 69, 58, 0.5);
-        }
-        .toast-dot.info {
-            background: var(--accent);
-            box-shadow: 0 0 8px rgba(108, 140, 255, 0.5);
-        }
-        .toast-msg {
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        @media (max-width: 640px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            .bar-container {
-                width: 94%;
-                gap: 7px;
-            }
-            .sidebar {
-                width: 85%;
-            }
-            .feat-grid {
-                gap: 7px;
-            }
-            .feat-card {
-                padding: 0.8rem 0.6rem;
-            }
-            .tool-card {
-                padding: 1.1rem;
-            }
-        }
-    </style>
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+}
+</style>
 </head>
 <body>
 
-    <div class="overlay" id="overlay"></div>
-
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-top">
-            <div class="sidebar-brand">
-                <img src="https://yoshikawa-bot.github.io/cache/images/8700030b.jpg" alt="Alyka">
-                <span class="sidebar-brand-name">Alyka API</span>
-            </div>
-            <button class="sidebar-close" id="closeSidebarBtn" title="Close">
-                <i class="fas fa-xmark" style="font-size:14px;"></i>
-            </button>
-        </div>
-        <div class="sidebar-body">
-            <div class="nav-section">Navigation</div>
-            <div class="nav-item active" id="nav-home">
-                <div class="nav-ico"><i class="fas fa-house"></i></div>
-                <span>Home</span>
-            </div>
-            <div class="nav-section" style="margin-top:10px;">Tools</div>
-            <div class="nav-group">
-                <button class="nav-group-btn" id="grp-dl" onclick="toggleGroup('dl')">
-                    <div class="nav-ico"><i class="fas fa-cloud-arrow-down"></i></div>
-                    <span class="nav-group-label">Downloads</span>
-                    <i class="fas fa-chevron-down nav-chevron"></i>
-                </button>
-                <div class="nav-sub" id="sub-dl">
-                    <div class="nav-sub-item" data-tool="ytmp3" data-mode="url">YT MP3 (Link)</div>
-                    <div class="nav-sub-item" data-tool="ytmp3" data-mode="search">YT MP3 (Search)</div>
-                    <div class="nav-sub-item" data-tool="ytmp4" data-mode="url">YT MP4 (Link)</div>
-                    <div class="nav-sub-item" data-tool="ytmp4" data-mode="search">YT MP4 (Search)</div>
-                    <div class="nav-sub-item" data-tool="tiktok" data-mode="url">TikTok No-Watermark</div>
-                    <div class="nav-sub-item" data-tool="igdl" data-mode="url">Instagram Reels/Post</div>
-                </div>
-            </div>
-            <div class="nav-group">
-                <button class="nav-group-btn" id="grp-search" onclick="toggleGroup('search')">
-                    <div class="nav-ico"><i class="fas fa-magnifying-glass"></i></div>
-                    <span class="nav-group-label">Search</span>
-                    <i class="fas fa-chevron-down nav-chevron"></i>
-                </button>
-                <div class="nav-sub" id="sub-search">
-                    <div class="nav-sub-item" data-tool="ytsearch" data-mode="query">YouTube Search</div>
-                    <div class="nav-sub-item" data-tool="tiktok" data-mode="query">TikTok Search</div>
-                </div>
-            </div>
-        </div>
-        <div class="sidebar-foot">Alyka API v1.0 &nbsp;·&nbsp; Yoshikawa Systems</div>
-    </nav>
-
-    <header class="bar-container" id="topBar">
-        <button class="round-btn" id="techBtn" title="Info">
-            <i class="fas fa-microchip" style="font-size:13px;"></i>
-        </button>
-        <div class="pill-container">
-            <span class="bar-label" id="barLabel">Alyka API</span>
-        </div>
-        <button class="round-btn" id="menuBtn" title="Menu">
-            <i class="fas fa-bars" style="font-size:13px;"></i>
-        </button>
-    </header>
-
-    <main class="container">
-        <section class="view active" id="view-home">
-            <div class="hero">
-                <img src="https://yoshikawa-bot.github.io/cache/images/8700030b.jpg" alt="Alyka" class="hero-logo">
-                <h1>Alyka API</h1>
-                <p>Official API of Yoshikawa Systems. Free, fast and reliable.</p>
-                <button class="cta-btn" onclick="openSidebar()">
-                    Get Started <i class="fas fa-arrow-right" style="font-size:10px;"></i>
-                </button>
-                <div class="feat-grid">
-                    <div class="feat-card">
-                        <div class="feat-ico fi-accent"><i class="fas fa-bolt"></i></div>
-                        <h3>Fast</h3><p>Optimized responses</p>
-                    </div>
-                    <div class="feat-card">
-                        <div class="feat-ico fi-green"><i class="fas fa-shield-halved"></i></div>
-                        <h3>Secure</h3><p>Encrypted connection</p>
-                    </div>
-                    <div class="feat-card">
-                        <div class="feat-ico fi-neutral"><i class="fas fa-code"></i></div>
-                        <h3>JSON</h3><p>Clean structured data</p>
-                    </div>
-                </div>
-            </div>
-            <footer class="site-footer">
-                <p class="f1">Alyka API &copy; 2025 Yoshikawa Systems</p>
-                <p class="f2">Created by Kawa</p>
-                <p class="f3">REST API &middot; JSON &middot; v1.0</p>
-            </footer>
-        </section>
-
-        <section class="view" id="view-tool">
-            <div class="page-header">
-                <h1 class="page-title" id="toolPageTitle">Tool</h1>
-                <div class="status-dots">
-                    <span class="dot r"></span>
-                    <span class="dot y"></span>
-                    <span class="dot g"></span>
-                </div>
-            </div>
-            <div class="tool-card">
-                <div class="tool-head">
-                    <div class="tool-icon-box" id="toolIcon"><i class="fab fa-youtube"></i></div>
-                    <div>
-                        <div class="tool-name" id="toolName">—</div>
-                        <div class="tool-hint" id="toolHint">Parameter: —</div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Parameter Value</label>
-                    <input type="text" class="field" id="toolInput" placeholder="Enter link or query…">
-                </div>
-                <div class="form-label">Endpoint URL</div>
-                <div class="endpoint-row">
-                    <div class="ep-method">GET</div>
-                    <div class="ep-url" id="urlPreview">https://alyka.vercel.app/api/…</div>
-                    <button class="ep-copy" onclick="copyUrl()" title="Copy URL">
-                        <i class="far fa-copy"></i>
-                    </button>
-                </div>
-                <button class="send-btn" id="sendBtn">
-                    <span class="btn-lbl">Send Request</span>
-                    <div class="spin"></div>
-                </button>
-                <div class="result-box" id="resultBox">
-                    <div class="result-top">
-                        <div class="ok-badge"><div class="ok-dot"></div> Response 200 OK</div>
-                        <button class="copy-json" onclick="copyJson()">
-                            <i class="far fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <div class="json-wrap">
-                        <pre class="json-pre" id="jsonOut"></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div class="toast" id="toast">
-        <div class="toast-dot" id="toastDot"></div>
-        <span class="toast-msg" id="toastMsg"></span>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <img class="brand-logo" src="https://yoshikawa-bot.github.io/cache/images/8700030b.jpg" alt="Alyka">
+    <div>
+      <div class="brand-name">Alyka API</div>
+      <div class="brand-sub">Yoshikawa Systems</div>
     </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">General</div>
+    <div class="nav-link active" id="navHome">
+      <i class="fa-solid fa-house nav-icon-plain"></i>
+      <span class="nav-link-name">Overview</span>
+    </div>
+    <div class="nav-label">Endpoints</div>
+    <div id="navEndpoints"></div>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="foot-row"><span class="foot-dot"></span>All systems operational</div>
+    <div class="foot-base">https://alyka.vercel.app/api</div>
+  </div>
+</aside>
 
-    <script>
-    const BASE = 'https://alyka.vercel.app/api';
+<div class="overlay" id="overlay"></div>
 
-    const TOOLS = {
-        ytmp3: { name: 'YouTube MP3', icon: 'fab fa-youtube', desc: 'Convert YouTube to MP3', param: 'url',
-            alt: 'search' },
-        ytmp4: { name: 'YouTube MP4', icon: 'fab fa-youtube', desc: 'Convert YouTube to MP4', param: 'url',
-            alt: 'search' },
-        ytsearch: { name: 'YouTube Search', icon: 'fab fa-youtube', desc: 'Search on YouTube', param: 'query' },
-        tiktok: { name: 'TikTok DL', icon: 'fab fa-tiktok', desc: 'No-watermark downloader', param: 'url',
-        alt: 'query' },
-        igdl: { name: 'Instagram DL', icon: 'fab fa-instagram', desc: 'Reels/Video downloader', param: 'url' }
-    };
+<div class="main">
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
+    <div class="topbar-crumb" id="topbarCrumb">Alyka API</div>
+    <div class="topbar-title" id="topbarTitle">/ Overview</div>
+  </header>
 
-    let curTool = null,
-        curParam = null,
-        lastJson = null;
-    let sidebarOpen = false;
-    let toastTimer = null;
-    let isScrolled = false;
+  <main class="content">
+    <section class="view active" id="view-home">
+      <div class="page-eyebrow">API Reference</div>
+      <h1 class="page-title">Alyka API</h1>
+      <p class="page-desc">A free REST API for media downloads and search, maintained by Yoshikawa Systems. Pick an endpoint to view its parameters and send a live request.</p>
+      <div class="index-list" id="homeIndex"></div>
+    </section>
 
-    const overlay = document.getElementById('overlay');
-    const sidebar = document.getElementById('sidebar');
-    const topBar = document.getElementById('topBar');
-    const barLabelEl = document.getElementById('barLabel');
-    const menuBtn = document.getElementById('menuBtn');
-    const techBtn = document.getElementById('techBtn');
-    const urlPreviewEl = document.getElementById('urlPreview');
-    const toolInputEl = document.getElementById('toolInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const resultBox = document.getElementById('resultBox');
-    const jsonOutEl = document.getElementById('jsonOut');
-    const toastEl = document.getElementById('toast');
-    const toastDot = document.getElementById('toastDot');
-    const toastMsg = document.getElementById('toastMsg');
+    <section class="view" id="view-tool">
+      <div class="breadcrumb"><a id="crumbHome">Endpoints</a><span>/</span><span id="crumbTool">—</span></div>
 
-    function openSidebar() {
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-        menuBtn.classList.add('is-open');
-        sidebarOpen = true;
-    }
+      <div class="tool-title-row">
+        <div class="chip" id="toolChip"></div>
+        <div class="tool-title-text">
+          <h1 id="toolName">—</h1>
+          <div class="endpoint-tag">
+            <span class="badge">GET</span>
+            <span class="endpoint-path" id="toolPath">/api/—</span>
+          </div>
+        </div>
+      </div>
+      <p class="tool-desc" id="toolDesc">—</p>
 
-    function closeSidebar() {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-        menuBtn.classList.remove('is-open');
-        sidebarOpen = false;
-    }
+      <div class="section-block" id="modeBlock">
+        <div class="section-label">Mode</div>
+        <div class="seg" id="modeSeg"></div>
+      </div>
 
-    menuBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        sidebarOpen ? closeSidebar() : openSidebar();
+      <div class="section-block">
+        <div class="section-label">Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Name</th><th>Type</th><th>Required</th></tr></thead>
+          <tbody id="paramTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="section-block">
+        <label class="field-label" id="fieldLabel">Value</label>
+        <input type="text" class="field" id="toolInput" placeholder="">
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Request</div>
+        <div class="code-block">
+          <span class="code-method">GET</span>
+          <div class="code-url" id="codeUrl"></div>
+          <button class="btn-icon" id="copyUrlBtn" title="Copy URL"><i class="fa-regular fa-copy"></i></button>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="btn btn-primary" id="sendBtn">
+          <span class="btn-text">Send request</span>
+          <div class="spin"></div>
+        </button>
+      </div>
+
+      <div class="section-block">
+        <div class="response-head">
+          <div class="section-label" style="margin-bottom:0;">Response</div>
+          <div class="status-pill" id="statusPill" style="display:none;"></div>
+        </div>
+        <div class="response-panel">
+          <div class="response-empty" id="responseEmpty">
+            <i class="fa-regular fa-circle-pause"></i>
+            Run the request to see the response here.
+          </div>
+          <div class="response-json" id="responseJson">
+            <pre id="jsonOut"></pre>
+            <div class="response-toolbar">
+              <button class="btn-icon" id="copyJsonBtn" title="Copy JSON"><i class="fa-regular fa-copy"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+const BASE = 'https://alyka.vercel.app/api';
+
+const TOOLS = {
+  ytmp3: {
+    name: 'YouTube to MP3',
+    path: '/api/ytmp3',
+    desc: 'Convert a YouTube video into an MP3 audio file, by direct link or by search term.',
+    icon: 'fa-youtube', chip: 'chip-yt',
+    modes: [
+      { id:'url', label:'Link', param:'url', placeholder:'https://youtube.com/watch?v=...' },
+      { id:'search', label:'Search', param:'search', placeholder:'e.g. lofi hip hop radio' }
+    ]
+  },
+  ytmp4: {
+    name: 'YouTube to MP4',
+    path: '/api/ytmp4',
+    desc: 'Convert a YouTube video into an MP4 video file, by direct link or by search term.',
+    icon: 'fa-youtube', chip: 'chip-yt',
+    modes: [
+      { id:'url', label:'Link', param:'url', placeholder:'https://youtube.com/watch?v=...' },
+      { id:'search', label:'Search', param:'search', placeholder:'e.g. lofi hip hop radio' }
+    ]
+  },
+  ytsearch: {
+    name: 'YouTube Search',
+    path: '/api/ytsearch',
+    desc: 'Search YouTube and return a list of matching videos.',
+    icon: 'fa-youtube', chip: 'chip-yt',
+    modes: [
+      { id:'query', label:'Query', param:'query', placeholder:'e.g. lofi hip hop radio' }
+    ]
+  },
+  tiktok: {
+    name: 'TikTok Downloader',
+    path: '/api/tiktok',
+    desc: 'Download a TikTok video without watermark by link, or search TikTok by term.',
+    icon: 'fa-tiktok', chip: 'chip-tt',
+    modes: [
+      { id:'url', label:'Link', param:'url', placeholder:'https://tiktok.com/@user/video/...' },
+      { id:'search', label:'Search', param:'query', placeholder:'Search term' }
+    ]
+  },
+  igdl: {
+    name: 'Instagram Downloader',
+    path: '/api/igdl',
+    desc: 'Download a reel or post from Instagram by link.',
+    icon: 'fa-instagram', chip: 'chip-ig',
+    modes: [
+      { id:'url', label:'Link', param:'url', placeholder:'https://instagram.com/p/...' }
+    ]
+  }
+};
+
+let currentTool = null;
+let currentMode = null;
+let lastJson = null;
+
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const menuBtn = document.getElementById('menuBtn');
+const navHome = document.getElementById('navHome');
+const navEndpoints = document.getElementById('navEndpoints');
+const homeIndex = document.getElementById('homeIndex');
+const topbarTitle = document.getElementById('topbarTitle');
+const toolInput = document.getElementById('toolInput');
+const sendBtn = document.getElementById('sendBtn');
+const codeUrl = document.getElementById('codeUrl');
+const responseEmpty = document.getElementById('responseEmpty');
+const responseJson = document.getElementById('responseJson');
+const jsonOut = document.getElementById('jsonOut');
+const statusPill = document.getElementById('statusPill');
+
+function buildSidebarNav(){
+  Object.keys(TOOLS).forEach(key=>{
+    const t = TOOLS[key];
+    const el = document.createElement('div');
+    el.className = 'nav-link';
+    el.innerHTML = `<div class="nav-chip ${t.chip}"><i class="fa-brands ${t.icon}"></i></div>
+      <span class="nav-link-name">${t.name}</span><span class="nav-method">GET</span>`;
+    el.addEventListener('click', ()=> openTool(key));
+    el.dataset.tool = key;
+    navEndpoints.appendChild(el);
+  });
+}
+
+function buildHomeIndex(){
+  Object.keys(TOOLS).forEach(key=>{
+    const t = TOOLS[key];
+    const row = document.createElement('div');
+    row.className = 'index-row';
+    row.innerHTML = `<div class="chip ${t.chip}"><i class="fa-brands ${t.icon}"></i></div>
+      <div class="index-info">
+        <div class="index-name">${t.name}</div>
+        <div class="index-path">${t.path}</div>
+      </div>
+      <span class="badge">GET</span>
+      <i class="fa-solid fa-chevron-right index-chevron"></i>`;
+    row.addEventListener('click', ()=> openTool(key));
+    homeIndex.appendChild(row);
+  });
+}
+
+function setActiveNav(key){
+  navHome.classList.toggle('active', !key);
+  document.querySelectorAll('#navEndpoints .nav-link').forEach(el=>{
+    el.classList.toggle('active', el.dataset.tool === key);
+  });
+}
+
+function goHome(){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-home').classList.add('active');
+  topbarTitle.textContent = '/ Overview';
+  setActiveNav(null);
+  closeSidebarMobile();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openTool(key){
+  currentTool = key;
+  const t = TOOLS[key];
+  currentMode = t.modes[0].id;
+
+  document.getElementById('toolChip').className = 'chip ' + t.chip;
+  document.getElementById('toolChip').innerHTML = `<i class="fa-brands ${t.icon}"></i>`;
+  document.getElementById('toolName').textContent = t.name;
+  document.getElementById('toolPath').textContent = t.path;
+  document.getElementById('toolDesc').textContent = t.desc;
+  document.getElementById('crumbTool').textContent = t.name;
+
+  buildModeSeg();
+  applyMode();
+
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-tool').classList.add('active');
+  topbarTitle.textContent = '/ ' + t.name;
+  setActiveNav(key);
+  closeSidebarMobile();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildModeSeg(){
+  const t = TOOLS[currentTool];
+  const seg = document.getElementById('modeSeg');
+  const block = document.getElementById('modeBlock');
+  seg.innerHTML = '';
+  if(t.modes.length < 2){ block.style.display = 'none'; return; }
+  block.style.display = 'block';
+  t.modes.forEach(m=>{
+    const btn = document.createElement('button');
+    btn.className = 'seg-btn' + (m.id===currentMode ? ' active' : '');
+    btn.textContent = m.label;
+    btn.addEventListener('click', ()=>{
+      currentMode = m.id;
+      buildModeSeg();
+      applyMode();
     });
-    document.getElementById('closeSidebarBtn').addEventListener('click', closeSidebar);
-    overlay.addEventListener('click', closeSidebar);
+    seg.appendChild(btn);
+  });
+}
 
-    function toggleGroup(id) {
-        const btn = document.getElementById('grp-' + id);
-        const sub = document.getElementById('sub-' + id);
-        const willOpen = !sub.classList.contains('open');
-        document.querySelectorAll('.nav-sub').forEach(s => s.classList.remove('open'));
-        document.querySelectorAll('.nav-group-btn').forEach(b => b.classList.remove('open'));
-        if (willOpen) {
-            sub.classList.add('open');
-            btn.classList.add('open');
-        }
-    }
+function applyMode(){
+  const t = TOOLS[currentTool];
+  const mode = t.modes.find(m=>m.id===currentMode);
+  document.getElementById('fieldLabel').textContent = 'Value';
+  toolInput.value = '';
+  toolInput.placeholder = mode.placeholder;
 
-    document.querySelectorAll('.nav-sub-item').forEach(el => {
-        el.addEventListener('click', () => setupTool(el.dataset.tool, el.dataset.mode));
-    });
-    document.getElementById('nav-home').addEventListener('click', goHome);
+  const tbody = document.getElementById('paramTableBody');
+  tbody.innerHTML = `<tr><td><code>${mode.param}</code></td><td>string</td><td class="req-yes">Yes</td></tr>`;
 
-    function showToast(message, type) {
-        if (toastTimer) clearTimeout(toastTimer);
-        toastDot.className = 'toast-dot ' + type;
-        toastMsg.textContent = message;
-        toastEl.classList.add('show');
-        toastTimer = setTimeout(() => {
-            toastEl.classList.remove('show');
-        }, 2600);
-    }
+  responseEmpty.style.display = 'flex';
+  responseJson.classList.remove('show');
+  statusPill.style.display = 'none';
+  lastJson = null;
 
-    window.addEventListener('scroll', () => {
-        const s = window.scrollY > 60;
-        if (s !== isScrolled) {
-            isScrolled = s;
-            topBar.classList.toggle('scrolled', s);
-        }
-    }, { passive: true });
+  updatePreview();
+}
 
-    function setView(id) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById('view-' + id).classList.add('active');
-    }
+function updatePreview(){
+  const t = TOOLS[currentTool];
+  const mode = t.modes.find(m=>m.id===currentMode);
+  const v = toolInput.value.trim();
+  codeUrl.innerHTML = `${BASE}${t.path}?${mode.param}=<b>${v ? escapeHtml(v) : 'value'}</b>`;
+}
 
-    function setLabel(text) {
-        barLabelEl.textContent = text;
-    }
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-    function clearNavActive() {
-        document.querySelectorAll('.nav-item, .nav-sub-item').forEach(el => el.classList.remove('active'));
-    }
+toolInput.addEventListener('input', updatePreview);
 
-    function goHome() {
-        clearNavActive();
-        document.getElementById('nav-home').classList.add('active');
-        setView('home');
-        setLabel('Alyka API');
-        closeSidebar();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+sendBtn.addEventListener('click', async ()=>{
+  const t = TOOLS[currentTool];
+  const mode = t.modes.find(m=>m.id===currentMode);
+  const v = toolInput.value.trim();
+  if(!v){ showToast('Enter a value before sending', 'error'); return; }
 
-    function setupTool(toolKey, mode) {
-        const cfg = TOOLS[toolKey];
-        curTool = toolKey;
-        curParam = (mode === 'search' || mode === 'query') ? (cfg.alt || cfg.param) : cfg.param;
+  sendBtn.classList.add('loading');
+  sendBtn.disabled = true;
 
-        document.getElementById('toolPageTitle').textContent = cfg.name;
-        document.getElementById('toolName').textContent = cfg.name;
-        document.getElementById('toolHint').textContent = 'Parameter: ' + curParam;
-        document.getElementById('toolIcon').innerHTML = '<i class="' + cfg.icon + '"></i>';
-        setLabel(cfg.name);
+  try{
+    const res = await fetch(`${BASE}${t.path}?${mode.param}=${encodeURIComponent(v)}`);
+    const data = await res.json();
+    lastJson = JSON.stringify(data, null, 2);
+    jsonOut.textContent = lastJson;
+    responseEmpty.style.display = 'none';
+    responseJson.classList.add('show');
+    setStatus(res.ok, res.status);
+    showToast(res.ok ? 'Request completed' : 'Request returned an error', res.ok ? 'success' : 'error');
+  }catch(err){
+    lastJson = null;
+    jsonOut.textContent = `Error: ${err.message}`;
+    responseEmpty.style.display = 'none';
+    responseJson.classList.add('show');
+    setStatus(false, '—');
+    showToast('Request failed', 'error');
+  }finally{
+    sendBtn.classList.remove('loading');
+    sendBtn.disabled = false;
+  }
+});
 
-        toolInputEl.value = '';
-        toolInputEl.placeholder = curParam === 'url' ? 'Paste link here…' : 'Type search term…';
-        resultBox.classList.remove('show');
-        updateUrl();
+function setStatus(ok, code){
+  statusPill.style.display = 'flex';
+  statusPill.className = 'status-pill ' + (ok ? 'status-ok' : 'status-err');
+  statusPill.innerHTML = `<span class="dot"></span>${code} ${ok ? 'OK' : 'Error'}`;
+}
 
-        clearNavActive();
-        const link = document.querySelector('.nav-sub-item[data-tool="' + toolKey + '"][data-mode="' + mode + '"]');
-        if (link) {
-            link.classList.add('active');
-            const sub = link.closest('.nav-sub');
-            if (sub) {
-                const grpId = sub.id.replace('sub-', '');
-                sub.classList.add('open');
-                document.getElementById('grp-' + grpId)?.classList.add('open');
-            }
-        }
+document.getElementById('copyUrlBtn').addEventListener('click', ()=>{
+  const t = TOOLS[currentTool];
+  const mode = t.modes.find(m=>m.id===currentMode);
+  const v = toolInput.value.trim();
+  navigator.clipboard.writeText(`${BASE}${t.path}?${mode.param}=${v || 'value'}`).then(()=>showToast('URL copied', 'info'));
+});
 
-        setView('tool');
-        closeSidebar();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+document.getElementById('copyJsonBtn').addEventListener('click', ()=>{
+  if(!lastJson) return;
+  navigator.clipboard.writeText(lastJson).then(()=>showToast('JSON copied', 'info'));
+});
 
-    toolInputEl.addEventListener('input', updateUrl);
+function showToast(message, type){
+  const stack = document.getElementById('toastStack');
+  const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', info:'fa-circle-info' };
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${message}</span>`;
+  stack.appendChild(el);
+  requestAnimationFrame(()=> el.classList.add('show'));
+  setTimeout(()=>{
+    el.classList.remove('show');
+    setTimeout(()=> el.remove(), 220);
+  }, 2400);
+}
 
-    function updateUrl() {
-        if (!curTool) return;
-        const v = toolInputEl.value.trim();
-        urlPreviewEl.textContent = BASE + '/' + curTool + '?' + curParam + '=' + (v || 'VALUE');
-        urlPreviewEl.scrollLeft = urlPreviewEl.scrollWidth;
-    }
+function openSidebarMobile(){
+  sidebar.classList.add('open');
+  overlay.classList.add('show');
+}
+function closeSidebarMobile(){
+  if(window.innerWidth <= 960){
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+}
 
-    sendBtn.addEventListener('click', async () => {
-        const v = toolInputEl.value.trim();
-        if (!v) {
-            showToast('Please enter a value', 'error');
-            return;
-        }
-        sendBtn.classList.add('loading');
-        sendBtn.disabled = true;
-        resultBox.classList.remove('show');
-        try {
-            const res = await fetch(BASE + '/' + curTool + '?' + curParam + '=' + encodeURIComponent(v));
-            const data = await res.json();
-            lastJson = JSON.stringify(data, null, 2);
-            jsonOutEl.textContent = lastJson;
-            resultBox.classList.add('show');
-            showToast('Request successful', 'success');
-        } catch (err) {
-            jsonOutEl.textContent = 'Error: ' + err.message;
-            resultBox.classList.add('show');
-            showToast('Request failed', 'error');
-        } finally {
-            sendBtn.classList.remove('loading');
-            sendBtn.disabled = false;
-        }
-    });
+menuBtn.addEventListener('click', ()=>{
+  sidebar.classList.contains('open') ? closeSidebarMobile() : openSidebarMobile();
+});
+overlay.addEventListener('click', closeSidebarMobile);
+navHome.addEventListener('click', goHome);
+document.getElementById('crumbHome').addEventListener('click', goHome);
 
-    function copyUrl() {
-        navigator.clipboard.writeText(urlPreviewEl.textContent).then(() => showToast('URL copied', 'info'));
-    }
-
-    function copyJson() {
-        if (!lastJson) return;
-        navigator.clipboard.writeText(lastJson).then(() => showToast('JSON copied', 'info'));
-    }
-
-    techBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        if (sidebarOpen) closeSidebar();
-        showToast('Alyka API v1.0 · Yoshikawa Systems', 'info');
-    });
-    </script>
+buildSidebarNav();
+buildHomeIndex();
+</script>
 </body>
-                                                           </html>
+</html>
