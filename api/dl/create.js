@@ -1,7 +1,7 @@
 const https = require('https')
 
 const encurtar = (url) => new Promise((resolve, reject) => {
-  const req = https.get(`https://api.delirius.store/shorten/tinyurl?url=${encodeURIComponent(url)}`, (res) => {
+  const req = https.get(`https://api.delirius.online/shorten/tinyurl?url=${encodeURIComponent(url)}`, (res) => {
     let data = ''
     res.on('data', chunk => data += chunk)
     res.on('end', () => {
